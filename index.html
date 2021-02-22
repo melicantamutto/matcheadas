@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./styles/main.css">
+    <title>MatcheADAs</title>
+</head>
+<body>
+    <main>
+        <header>
+            <h1 class="main-title">MatcheADAs</h1>
+        </header>
+        <section class="stats-container">
+            <p class="stat-title">Combo</p>
+            <p class="stat-title">Puntos</p>
+            <section class="stats-icons-container">
+                <i class="fas fa-question-circle stat-icon" id="help-button"></i>
+                <i class="fas fa-redo-alt stat-icon" id="restart-button"></i>
+            </section>
+        </section>
+        <section class="game-container">
+
+        </section>
+        <section class="clock-container">
+            <i class="far fa-hourglass"></i>
+            <p class="clock" id="clock"></p>
+        </section>
+    </main> 
+    <section class="modal-container modal-welcome" id="modal-welcome">
+        <section class="modal-text-container">
+            <h2 class="modal-title">¡Bienvenida!</h2>
+            <p class="modal-text"> En MatcheADAs tu objetivo es juntar tres o más ítems del mismo tipo,
+                ya sea en fila o columna. Para eso, selecciona un ítem y a
+                continuación un ítem adyacente para intercambiarlos de lugar.</p>
+            <p class="modal-text">Si se forma un grupo, esos ítems se eliminarán y ganarás puntos.
+                ¡Sigue armando grupos de 3 o más antes de que se acabe el tiempo!</p>
+            <h3 class="modal-subtitle">Controles</h3>
+            <p class="modal-text">Click izquierdo: selección</p>
+            <p class="modal-text">Enter o Espacio: selección</p>
+            <p class="modal-text">Flechas o WASD: movimiento e intercambio</p>
+            <a href="#" class="cta" id="cta">A Jugar</a>
+        </section>
+        <img src="./assets/727d486036f5100459991dba843a84dc.jpg" alt="flores">
+    </section>
+    <section class="modal-container modal-difficulty" id="modal-difficulty">
+        <section class="modal-text-container">
+            <h2 class="modal-title">Nuevo juego</h2>
+            <p class="modal-text">Selecciona una dificultad</p>
+            <button class="modal-button" id="difficulty-button">Fácil</button>
+            <button class="modal-button" id="difficulty-button">Normal</button>
+            <button class="modal-button" id="difficulty-button">Difícil</button>
+        </section>
+        <img src="./assets/727d486036f5100459991dba843a84dc.jpg" alt="flores">
+    </section>
+    <section class="modal-container modal-restart" id="modal-restart">
+        <section class="modal-text-container">
+            <h2 class="modal-title">Reiniciar juego?</h2>
+            <p class="modal-text">Perderás todo tu puntaje acumulado!</p>
+            <button class="modal-button calcel-button" id="cancel-button">Cancelar</button>
+            <button class="modal-button" id="new-game-button">Nuevo Juego</button>
+        </section>
+        <img src="./assets/727d486036f5100459991dba843a84dc.jpg" alt="flores">
+    </section>
+    <section class="modal-container modal-over" id="modal-over">
+        <section class="modal-text-container">
+            <h2 class="modal-title">¡Juego terminado!</h2>
+            <p class="modal-text">Puntaje final: <span id="final-score"></span></p>
+            <button class="modal-button" id="new-game-button">Nuevo Juego</button>
+            <button class="modal-button" id="restart-game-button">Reiniciar</button>
+        </section>
+        <img src="./assets/727d486036f5100459991dba843a84dc.jpg" alt="flores">
+    </section>
+    <!-- <section class="modal-container" id="modalContainer">
+        <article class="modal modal-close" id="modal">
+            <p class="close" id="close">X</p>
+            <img src="./assets/rosa.jpg" alt="ramito">
+            <section class="modal-textos">
+                <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Similique, harum.</p>
+            </section>
+        </article>
+    </section> -->
+
+    <script src="main.js"></script>
+</body>
+</html>
