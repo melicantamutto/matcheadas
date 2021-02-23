@@ -14,10 +14,17 @@ const difficultyHard = document.getElementById('difficulty-hard');
 
 // GRID ELEMENTS
 
-const pizza = 'U+1F355';
-const hamburguer = 'U+1F354';
-const sushi = 'U+1F363';
-const pasta = 'U+1F35D';
+const pizza
+pizza.textContent = 'U+1F355';
+const hamburguer
+hamburguer.textContent = 'U+1F354';
+const sushi  
+sushi.textContent = 'U+1F363';
+const pasta
+pasta.textContent = 'U+1F35D';
+
+twemoji.parse(document.body);
+
 const food = [pizza, hamburguer, sushi, pasta]
 
 const grid = document.getElementById('grid');
