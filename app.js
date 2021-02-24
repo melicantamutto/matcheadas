@@ -1,26 +1,17 @@
 // HTML ELEMENTS
-const modalWelcome = document.getElementById('modal-welcome');
-const modalDifficulty = document.getElementById('modal-difficulty');
-const modalRestart = document.getElementById('modal-restart');
 
-const newGame = document.getElementById('new-game')
-const cancelButton = document.getElementById('cancel-button');
-const restartGame = document.getElementById('restart-game');
 
-const difficultyEasy = document.getElementById('difficulty-easy');
-const difficultyNormal = document.getElementById('difficulty-normal');
-const difficultyHard = document.getElementById('difficulty-hard');
 
 
 // GRID ELEMENTS
 
-const pizza
+const pizza = document.createElement('span');
 pizza.textContent = 'U+1F355';
-const hamburguer
+const hamburguer = document.createElement('span');
 hamburguer.textContent = 'U+1F354';
-const sushi  
+const sushi = document.createElement('span');
 sushi.textContent = 'U+1F363';
-const pasta
+const pasta = document.createElement('span');
 pasta.textContent = 'U+1F35D';
 
 twemoji.parse(document.body);
@@ -32,45 +23,34 @@ const grid = document.getElementById('grid');
 
 // GRID FUNCTIONS
 const getRandomInt = (min, max) =>{
-    return Math.floor(Math.random() * (max - min)) + min
+    return Math.floor(Math.random() * (max - min)) + min;
 }
 
-const obtenerEmoji = food[getRandomInt(0, 7)];
+console.log(getRandomInt(0,5))
+console.log(getRandomInt(0,5))
+console.log(getRandomInt(0,5))
+console.log(getRandomInt(0,5))
+console.log(getRandomInt(0,5))
+console.log(getRandomInt(0,5))
 
-const createGrid = () =>{
-    for(let i=0; i < 7; i++){
-        for(let j=0; j < 7; j++){
-            
+const createGrid = (difficulty) =>{
+    let number;
+    if(difficulty === 'easy'){
+        number= 9;
+    } else if(difficulty === 'normal'){
+        number = 8;
+    } else if(difficulty === 'hard'){
+        number = 7;
+    }
+    for(let i=0; i < number; i++){
+        for(let j=0; j < number; j++){
+            const newP = document.createElement('p');
+            newP.innerHTML = food[getRandomInt(0,4)];
+            grid.appendChild(newP);
         }
     }
 }
 
-
-// MODAL FUNCTIONS
-
-
-cta.addEventListener('click', (e) =>{
-    e.preventDefault();
-    modalContainer.style.opacity = '1';
-    modalContainer.style.visibility = 'visible';
-    modal.classList.toggle('modal-close');
-})
-close.addEventListener('click', () =>{
-    modal.classList.add('modal-close');
-    setTimeout(() =>{
-        modalContainer.style.opacity = '0';
-        modalContainer.style.visibility = 'hidden';
-    },400)
-})
-window.addEventListener('click', e =>{
-    if(e.target === modalContainer){
-        modal.classList.add('modal-close');
-        setTimeout(() =>{
-            modalContainer.style.opacity = '0';
-            modalContainer.style.visibility = 'hidden';
-        },400)
-    }
-})
 
 
 
@@ -78,7 +58,7 @@ window.addEventListener('click', e =>{
 
 //SWEET ALERT
 
-const modalWelcomeModal = () =>{
+const modalWelcome = () =>{
     swal({
         title: "Bienvenidas!",
         text: "En MatcheADAs tu objetivo es juntar tres o más ítems del mismo tipo, ya sea en fila o columna. Para eso, selecciona un ítem y a continuación un ítem adyacente para intercambiarlos de lugar.",
@@ -111,20 +91,20 @@ const difficultyModal = () =>{
           },
       });
 }
-.then((value) =>{
-    switch(value){
-        case "easy":
-            createGrid(easy);
-            break;
-        case "normal":
-            createGrid(normal);
-            break;
-        case "hard":
-            createGrid(hard);
-            break;
-        default:
-    }
-})
+// .then((value) =>{
+//     switch(value){
+//         case "easy":
+//             createGrid(easy);
+//             break;
+//         case "normal":
+//             createGrid(normal);
+//             break;
+//         case "hard":
+//             createGrid(hard);
+//             break;
+//         default:
+//     }
+// })
 
 const restartModal = () =>{
     swal({
@@ -142,17 +122,17 @@ const restartModal = () =>{
           },
       });
 }
-.then((value) =>{
-    switch(value){
-        case "cancel":
-            createGrid(easy);
-            break;
-        case "newGame":
-            difficultyModal();
-            break;
-        default:
-    }
-})
+// .then((value) =>{
+//     switch(value){
+//         case "cancel":
+//             createGrid(easy);
+//             break;
+//         case "newGame":
+//             difficultyModal();
+//             break;
+//         default:
+//     }
+// })
 const gameOverModal = () =>{
     swal({
         title: "¡Juego terminado!",
