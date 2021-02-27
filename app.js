@@ -1,56 +1,54 @@
 // HTML ELEMENTS
 
-
+const helpButton = document.getElementById('help-button');
+const restartButton = document.getElementById('restart-button');
+const comboCounter = document.getElementById('combo-counter');
+const pointsCounter = document.getElementById('points-counter');
 
 
 // GRID ELEMENTS
 
 const pizza = document.createElement('span');
-pizza.textContent = 'U+1F355';
+pizza.textContent = '&#1F355';
 const hamburguer = document.createElement('span');
-hamburguer.textContent = 'U+1F354';
+hamburguer.textContent = '&#1F354';
 const sushi = document.createElement('span');
-sushi.textContent = 'U+1F363';
+sushi.textContent = '&#1F363';
 const pasta = document.createElement('span');
-pasta.textContent = 'U+1F35D';
+pasta.textContent = '&#1F35D';
 
 twemoji.parse(document.body);
+
+let difficulty = 0;
 
 const food = [pizza, hamburguer, sushi, pasta]
 
 const grid = document.getElementById('grid');
 
 
+
 // GRID FUNCTIONS
+
 const getRandomInt = (min, max) =>{
     return Math.floor(Math.random() * (max - min)) + min;
 }
 
-console.log(getRandomInt(0,5))
-console.log(getRandomInt(0,5))
-console.log(getRandomInt(0,5))
-console.log(getRandomInt(0,5))
-console.log(getRandomInt(0,5))
-console.log(getRandomInt(0,5))
+const stylingGrid = (difficulty, emoji) =>{
+    emoji.style.width = `calc(33rem / ${difficulty} - 1rem)`;
+    emoji.style.height = `calc(33rem / ${difficulty} - 1rem)`;
+}
 
 const createGrid = (difficulty) =>{
-    let number;
-    if(difficulty === 'easy'){
-        number= 9;
-    } else if(difficulty === 'normal'){
-        number = 8;
-    } else if(difficulty === 'hard'){
-        number = 7;
-    }
-    for(let i=0; i < number; i++){
-        for(let j=0; j < number; j++){
+    for(let i=0; i < difficulty; i++){
+        for(let j=0; j < difficulty; j++){
             const newP = document.createElement('p');
+            stylingGrid(difficulty, newP);
             newP.innerHTML = food[getRandomInt(0,4)];
             grid.appendChild(newP);
         }
     }
+    return difficulty;
 }
-
 
 
 
@@ -58,18 +56,36 @@ const createGrid = (difficulty) =>{
 
 //SWEET ALERT
 
-const modalWelcome = () =>{
+const welcomeText = document.createElement('span');
+welcomeText.innerHTML ="En MatcheADAs tu objetivo es juntar tres o más ítems del mismo tipo, ya sea en fila o columna. Para eso, selecciona un ítem y a continuación un ítem adyacente para intercambiarlos de lugar. <br /> <br /> Si se forma un grupo, esos ítems se eliminarán y ganarás puntos. ¡Sigue armando grupos de 3 o más antes de que se acabe el tiempo!<br /> <br /> <strong>Controles</strong> <br /> Click izquierdo: selección <br />Enter o Espacio: selección <br /> Flechas o WASD: movimiento e intercambio";
+
+const welcomeModal = () =>{
     swal({
-        title: "Bienvenidas!",
-        text: "En MatcheADAs tu objetivo es juntar tres o más ítems del mismo tipo, ya sea en fila o columna. Para eso, selecciona un ítem y a continuación un ítem adyacente para intercambiarlos de lugar.",
-        text: "Si se forma un grupo, esos ítems se eliminarán y ganarás puntos. ¡Sigue armando grupos de 3 o más antes de que se acabe el tiempo!",
-        title: "Controles",
-        text: "Click izquierdo: selección",
-        text: "Enter o Espacio: selección",
-        text: "Flechas o WASD: movimiento e intercambio",
+        title:"¡Bienvenida!",
+        content: welcomeText,
         button: "A jugar!",
-      });
+        className: "modal",
+        closeOnClickOutside: false,
+        closeOnEsc: false,
+        
+      }).then((value) =>{
+        if(value){
+           difficultyModal();
+        }
+    })
 }
+
+const infoModal = () =>{
+    swal({
+        title:"¡Bienvenida!",
+        content: welcomeText,
+        button: "A jugar!",
+        className: "modal",
+        closeOnClickOutside: false,
+        closeOnEsc: false,
+    })
+}
+
 
 const difficultyModal = () =>{
     swal({
@@ -77,7 +93,7 @@ const difficultyModal = () =>{
         text: "Selecciona una dificultad",
         buttons: {
             easy: {
-                text: "Normal",
+                text: "Fácil",
                 value: "easy",
               },
             normal: {
@@ -89,62 +105,101 @@ const difficultyModal = () =>{
                 value: "hard",
               },
           },
-      });
+        className: "modal",
+        closeOnClickOutside: false,
+        closeOnEsc: false,
+      }).then((value) =>{
+        switch(value){
+            case "easy":
+                difficulty= 9;
+                createGrid(difficulty);
+                break;
+            case "normal":
+                difficulty= 8;
+                createGrid(difficulty);
+                break;
+            case "hard":
+                difficulty= 7;
+                createGrid(difficulty);
+                break;
+            default:
+        }
+    })
 }
-// .then((value) =>{
-//     switch(value){
-//         case "easy":
-//             createGrid(easy);
-//             break;
-//         case "normal":
-//             createGrid(normal);
-//             break;
-//         case "hard":
-//             createGrid(hard);
-//             break;
-//         default:
-//     }
-// })
+
 
 const restartModal = () =>{
     swal({
         title: "Reiniciar juego?",
         text: "Perderás todo tu puntaje acumulado!",
         buttons: {
-            cancel: {
+            cancelRestart: {
                 text: "Cancelar",
-                value: "cancel",
+                value: "cancelRestar",
               },
             newGame: {
               text: "Nuevo Juego",
               value: "newGame",
             },
           },
-      });
+        className: "modal",
+        closeOnClickOutside: false,
+        closeOnEsc: false,
+      }).then((value) =>{
+        switch(value){
+            case "cancelRestart":
+                break;
+            case "newGame":
+                grid.innerHTML = '';
+                difficultyModal();
+                break;
+            default:
+        }
+    })
 }
-// .then((value) =>{
-//     switch(value){
-//         case "cancel":
-//             createGrid(easy);
-//             break;
-//         case "newGame":
-//             difficultyModal();
-//             break;
-//         default:
-//     }
-// })
+
 const gameOverModal = () =>{
     swal({
         title: "¡Juego terminado!",
-        text: `Puntaje final: ${finalScore}`,
-        icon: "success",
-        button: "Nuevo Juego",
-        button: "Reiniciar",
-      });
+        text: `Puntaje final: `, //'${finalScore}'
+        buttons: {
+            newGame: {
+                text: "Nuevo Juego",
+                value: "newGame",
+            },
+            redo: {
+                text: "Reiniciar",
+                value: "redo",
+              },
+          },
+        className: "modal",
+        closeOnClickOutside: false,
+        closeOnEsc: false,
+      }).then((value) =>{
+        switch(value){
+            case "newGame":
+                grid.innerHTML = '';
+                difficultyModal();
+                break;
+            case "redo":
+                grid.innerHTML = '';
+                createGrid(difficulty);
+                break;
+            default:
+        }
+    })
 }
 
 
-window.addEventListener('click', ()=>{
-   modalWelcome;
+window.addEventListener('load', ()=>{
+   welcomeModal();
+
 })
 
+helpButton.addEventListener('click', ()=>{
+    infoModal();
+ })
+
+ restartButton.addEventListener('click', () =>{
+    restartModal();
+ })
