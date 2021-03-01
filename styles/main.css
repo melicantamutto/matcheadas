@@ -1,84 +1,149 @@
-/* ----------------------------------------------------------------MODAL---------------------------------------------------------------- */
-.main-container {
-    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
-    height: 100vh;
-    display: flex;
-    justify-content: space-evenly;
-    align-items: center;
-    padding: 0 40px;
-    background-image: linear-gradient(-20deg, #e9defa 0%, #fbfcdb 100%);
-}
+/* VARIABLES */
 
-.main-container>img {
-    width: 27%;
+:root{
+    --darkViolet: rgb(69, 18, 73);
 }
+/* PAGE STYLES */
 
-.text-container>h2 {
-    font-size: 4em;
-    font-weight: bold;
-    margin-bottom: 1rem;
-}
-
-.text-container>p {
-    font-size: 1.1em;
-    margin-bottom: 2rem;
-}
-
-.cta {
-    display: block;
-    width: 5em;
-    font-size: 1.5em;
-    font-weight: bold;
-    margin-bottom: 1rem;
-    color: black;
-    text-decoration: none;
-    background-color: #aaaaaa;
-    color: white;
-    border-radius: 10px;
-    padding: 0.4em 0.7em;
-}
-
-.modal-container {
-    opacity: 0;
-    position: fixed;
-    visibility: hidden;
+html,
+body{
     width: 100vw;
     height: 100vh;
-    top: 0;
-    left: 0;
-    background-color: rgba(117, 72, 111, 0.5);
+}
+
+/* COMMON STYLES */
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    text-decoration: none;
+}
+
+/* MAIN STYLES */
+
+body{
+    background-image: url("../assets/table-top-with-background.jpg");
+    background-size: 100%;
+    background-position: center;
     display: flex;
     justify-content: center;
-    align-items: center;
-    transition: transform 0.5s;
 }
-.modal{
-    transform: translateY(0);
+
+.main-container {
+    font-family: 'Quicksand', sans-serif;
+    height: 100vh;
     width: 40%;
-    height: 53%;
-    background-color: floralwhite;
     display: flex;
     flex-direction: column;
-    justify-content: space-around;
+    justify-content: space-evenly;
     align-items: center;
-    border-radius: 2;
-    transition: transform 0.5s;
+    padding: 2.5rem;
 }
-.modal-close{
-    transform: translateY(-220%);
-}
-.modal>img{
-    width: 55%;
-}
-.close{
-    position: absolute;
-    padding: 0.5em 0.82em;
-    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
-    background-color: rgb(117, 72, 111) ;
-    color: white;
-    border-radius: 50px;
-    right: 5px;
-    top: 5px;
+
+/* HEADER SYLES */
+
+.main-title{
+    color: var(--darkViolet);
+    text-shadow: -1px 0 white, 0 1px white, 1px 0 white, 0 -1px white;
+    font-size: 3rem;
     font-weight: bold;
-    cursor: pointer;
+    margin-bottom: 0.5em;
+}
+
+/* STATS STYLES */
+
+.control-container{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 80%;
+    background-color: var(--darkViolet);
+    color: white;
+}
+
+.control-stats-container,
+.control-icons-container{
+    display: flex;
+}
+
+.control-stats-container > *,
+.control-icons-container > *{
+    margin: 0.5em;
+}
+
+/* GRID STYLES */
+
+.grid-container{
+    width: 33rem;
+    height: 33rem;
+    display: flex;
+    flex-wrap: wrap;
+    background-color: rgba(114, 98, 69, 0.5);
+    justify-content: center;
+    align-items: center;
+}
+
+.grid-container > *{
+    margin: 0.5rem;
+}
+
+.grid-container img{
+    width: 100%;
+}
+
+
+/* CLOCK STYLES */
+
+.clock-container{
+    color: #fff;
+    background-color: var(--darkViolet);
+    padding: 0.75em 1em;
+    border-radius: 30px;
+}
+
+
+/* Sweet Alert styles  */
+
+.swal-overlay {
+    background-color: rgba(178, 146, 214, 0.45);
+}
+
+.swal-modal {
+    background-color: rgb(240, 241, 241);
+    border: 3px solid #afa292;
+    font-family: 'Quicksand', sans-serif;
+}
+
+.swal-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+
+    color: var(--darkViolet);
+}
+
+.swal-text {
+    font-size: 1rem;
+    font-weight: 500;
+    display: block;
+    text-align: center;
+    color: #61534e;
+}
+
+.swal-button{
+    padding: 7px 19px;
+    border-radius: 2px;
+    background-color: #ead9c4;
+    color: var(--darkViolet);
+    border-radius: 10px;
+    box-shadow: 0px 2px 5px 0px rgba(128, 95, 128,0.3);
+    font-size: 1rem;
+}
+
+.swal-button:hover{
+    background-color: #ead0c4 !important;
+    box-shadow: 0px 2px 5px 0px rgba(128, 95, 128,0.5);
+}
+.swal-button:focus{
+    box-shadow: 0px 2px 5px 0px rgba(128, 95, 128,0.3);
 }

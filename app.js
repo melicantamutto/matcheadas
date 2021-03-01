@@ -8,20 +8,17 @@ const pointsCounter = document.getElementById('points-counter');
 
 // GRID ELEMENTS
 
-const pizza = document.createElement('span');
-pizza.textContent = '&#1F355';
-const hamburguer = document.createElement('span');
-hamburguer.textContent = '&#1F354';
-const sushi = document.createElement('span');
-sushi.textContent = '&#1F363';
-const pasta = document.createElement('span');
-pasta.textContent = '&#1F35D';
+const pizza = '🍕';
+const hamburguer = '🍔';
+const sushi = '🍣';
+const pasta = '🍝';
+const sandwich = '🥪';
+const salad = '🥗'
 
-twemoji.parse(document.body);
 
 let difficulty = 0;
 
-const food = [pizza, hamburguer, sushi, pasta]
+const food = [pizza, hamburguer, sushi, pasta, sandwich, salad]
 
 const grid = document.getElementById('grid');
 
@@ -34,8 +31,8 @@ const getRandomInt = (min, max) =>{
 }
 
 const stylingGrid = (difficulty, emoji) =>{
-    emoji.style.width = `calc(33rem / ${difficulty} - 1rem)`;
-    emoji.style.height = `calc(33rem / ${difficulty} - 1rem)`;
+    emoji.style.width = `calc(33rem / ${difficulty} - 1.01rem)`;
+    emoji.style.height = `calc(33rem / ${difficulty} - 1.01rem)`;
 }
 
 const createGrid = (difficulty) =>{
@@ -43,10 +40,11 @@ const createGrid = (difficulty) =>{
         for(let j=0; j < difficulty; j++){
             const newP = document.createElement('p');
             stylingGrid(difficulty, newP);
-            newP.innerHTML = food[getRandomInt(0,4)];
+            newP.innerHTML = food[getRandomInt(0,6)];
             grid.appendChild(newP);
         }
     }
+    twemoji.parse(document.body);
     return difficulty;
 }
 
@@ -197,7 +195,8 @@ window.addEventListener('load', ()=>{
 })
 
 helpButton.addEventListener('click', ()=>{
-    infoModal();
+    // infoModal();
+    gameOverModal()
  })
 
  restartButton.addEventListener('click', () =>{
