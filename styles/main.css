@@ -33,7 +33,7 @@ body {
 
 .main-container {
     font-family: 'Quicksand', sans-serif;
-    height: 100vh;
+    height: 100%;
     width: 40%;
     display: flex;
     flex-direction: column;
@@ -83,6 +83,7 @@ body {
     background-color: rgba(114, 98, 69, 0.5);
     justify-content: center;
     align-items: center;
+    margin-top: 0.5em;
 }
 
 .grid-container>* {
@@ -98,6 +99,7 @@ body {
 .clock-container {
     color: #fff;
     background-color: var(--darkViolet);
+    margin: 0.5em 0;
     padding: 0.75em 1em;
     border-radius: 30px;
     display: flex;
@@ -177,6 +179,9 @@ body {
     .clock-container {
         font-size: 1rem;
     }
+    .main-title {
+        font-size: 2.5rem;
+    }
 
 }
 
@@ -191,5 +196,15 @@ body {
 
     .main-title {
         font-size: 2rem;
+    }
+}
+
+@media (orientation: landscape){
+    body{
+        height: fit-content;
+    }
+    .main-container{
+        flex-direction: row;
+        flex-wrap: wrap;
     }
 }
