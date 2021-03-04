@@ -59,6 +59,7 @@ body{
     justify-content: space-between;
     width: 80%;
     background-color: var(--darkViolet);
+    border: 3px solid rgba(255, 255, 255, 0.5);
     color: white;
 }
 
@@ -92,7 +93,6 @@ body{
     width: 100%;
 }
 
-
 /* CLOCK STYLES */
 
 .clock-container{
@@ -100,62 +100,15 @@ body{
     background-color: var(--darkViolet);
     padding: 0.75em 1em;
     border-radius: 30px;
-}
-
-
-/* Sweet Alert styles  */
-
-.swal-overlay {
-    background-color: rgba(178, 146, 214, 0.45);
-}
-
-.swal-modal {
-    background-color: rgb(240, 241, 241);
-    border: 3px solid #afa292;
-    font-family: 'Quicksand', sans-serif;
-}
-
-.swal-title {
-    font-size: 1.5rem;
+    display: flex;
     font-weight: 700;
-
-    color: var(--darkViolet);
+    align-items: center;
+    font-size: 1.2rem;
+    border: 3px solid rgba(255, 255, 255, 0.5);
 }
 
-.swal-text {
-    font-size: 1rem;
-    font-weight: 500;
-    display: block;
-    text-align: center;
-    color: #61534e;
-}
-
-.swal-button{
-    padding: 7px 19px;
-    border-radius: 2px;
-    background-color: #ead9c4;
-    color: var(--darkViolet);
-    border-radius: 10px;
-    box-shadow: 0px 2px 5px 0px rgba(128, 95, 128,0.3);
-    font-size: 1rem;
-}
-
-.swal-button:hover{
-    background-color: #ead0c4 !important;
-    box-shadow: 0px 2px 5px 0px rgba(128, 95, 128,0.5);
-}
-.swal-button:focus{
-    box-shadow: 0px 2px 5px 0px rgba(128, 95, 128,0.3);
-}
-=======
-
-/* CLOCK STYLES */
-
-.clock-container{
-    color: #fff;
-    background-color: var(--darkViolet);
-    padding: 0.75em 1em;
-    border-radius: 30px;
+.fa-hourglass{
+    margin-right: 1em;
 }
 
 
