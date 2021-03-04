@@ -6,6 +6,37 @@ const comboCounter = document.getElementById('combo-counter');
 const pointsCounter = document.getElementById('points-counter');
 
 
+//  TIMER
+
+const clock = document.getElementById('clock');
+let time;
+let maxTime = 30;
+let pause = 0;
+
+
+const timer = (seconds) =>{
+    clearInterval(time);
+
+    time = setInterval( () =>{
+        if(seconds >= 10){
+            clock.innerHTML = `0:${seconds}`;
+            seconds--;
+            pause = seconds;
+        } else if(seconds < 10 && seconds > 0){
+            clock.innerHTML = `0:0${seconds}`;
+            seconds--;            
+            pause = seconds;
+        } else if(seconds === 0){
+            clock.innerHTML = `0:0${seconds}`;
+           gameOverModal();
+        }
+    },1000)
+    return pause
+}
+
+
+
+
 // GRID ELEMENTS
 
 const pizza = '🍕';
@@ -26,14 +57,26 @@ const grid = document.getElementById('grid');
 
 // GRID FUNCTIONS
 
+// Random number
+
 const getRandomInt = (min, max) =>{
     return Math.floor(Math.random() * (max - min)) + min;
 }
+
+// Clean grid html
+
+const cleanGrid = () =>{
+    grid.innerHTML = '';
+}
+
+// Styling each emoji
 
 const stylingGrid = (difficulty, emoji) =>{
     emoji.style.width = `calc(33rem / ${difficulty} - 1.01rem)`;
     emoji.style.height = `calc(33rem / ${difficulty} - 1.01rem)`;
 }
+
+// Creating grid
 
 const createGrid = (difficulty) =>{
     for(let i=0; i < difficulty; i++){
@@ -45,14 +88,15 @@ const createGrid = (difficulty) =>{
         }
     }
     twemoji.parse(document.body);
+    timer(maxTime);
     return difficulty;
 }
 
 
 
-
-
 //SWEET ALERT
+
+// MODAL WELCOME
 
 const welcomeText = document.createElement('span');
 welcomeText.innerHTML ="En MatcheADAs tu objetivo es juntar tres o más ítems del mismo tipo, ya sea en fila o columna. Para eso, selecciona un ítem y a continuación un ítem adyacente para intercambiarlos de lugar. <br /> <br /> Si se forma un grupo, esos ítems se eliminarán y ganarás puntos. ¡Sigue armando grupos de 3 o más antes de que se acabe el tiempo!<br /> <br /> <strong>Controles</strong> <br /> Click izquierdo: selección <br />Enter o Espacio: selección <br /> Flechas o WASD: movimiento e intercambio";
@@ -73,17 +117,23 @@ const welcomeModal = () =>{
     })
 }
 
+// MODAL INFORMATION (SAME AS WELCOME, DIFFERENT PROMISE)
+
 const infoModal = () =>{
+    clearInterval(time);
     swal({
-        title:"¡Bienvenida!",
+        title:"¿Qué hago?",
         content: welcomeText,
         button: "A jugar!",
         className: "modal",
         closeOnClickOutside: false,
         closeOnEsc: false,
+    }).then((value) =>{
+        timer(pause);
     })
 }
 
+// MODAL DIFICULTY
 
 const difficultyModal = () =>{
     swal({
@@ -125,15 +175,17 @@ const difficultyModal = () =>{
     })
 }
 
+// MODAL RESTART GAME
 
 const restartModal = () =>{
+    clearInterval(time);
     swal({
         title: "Reiniciar juego?",
         text: "Perderás todo tu puntaje acumulado!",
         buttons: {
             cancelRestart: {
                 text: "Cancelar",
-                value: "cancelRestar",
+                value: "cancelRestart",
               },
             newGame: {
               text: "Nuevo Juego",
@@ -146,9 +198,10 @@ const restartModal = () =>{
       }).then((value) =>{
         switch(value){
             case "cancelRestart":
+                timer(pause);
                 break;
             case "newGame":
-                grid.innerHTML = '';
+                cleanGrid();
                 difficultyModal();
                 break;
             default:
@@ -156,7 +209,10 @@ const restartModal = () =>{
     })
 }
 
+// MODAL GAME OVER
+
 const gameOverModal = () =>{
+    clearInterval(time);
     swal({
         title: "¡Juego terminado!",
         text: `Puntaje final: `, //'${finalScore}'
@@ -176,11 +232,11 @@ const gameOverModal = () =>{
       }).then((value) =>{
         switch(value){
             case "newGame":
-                grid.innerHTML = '';
+                cleanGrid();
                 difficultyModal();
                 break;
             case "redo":
-                grid.innerHTML = '';
+                cleanGrid();
                 createGrid(difficulty);
                 break;
             default:
@@ -188,6 +244,7 @@ const gameOverModal = () =>{
     })
 }
 
+// MODAL EVENTS
 
 window.addEventListener('load', ()=>{
    welcomeModal();
@@ -195,10 +252,10 @@ window.addEventListener('load', ()=>{
 })
 
 helpButton.addEventListener('click', ()=>{
-    // infoModal();
-    gameOverModal()
+    infoModal();
  })
 
  restartButton.addEventListener('click', () =>{
     restartModal();
  })
+

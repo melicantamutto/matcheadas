@@ -59,6 +59,7 @@ body{
     justify-content: space-between;
     width: 80%;
     background-color: var(--darkViolet);
+    border: 3px solid rgba(255, 255, 255, 0.5);
     color: white;
 }
 
@@ -99,6 +100,15 @@ body{
     background-color: var(--darkViolet);
     padding: 0.75em 1em;
     border-radius: 30px;
+    display: flex;
+    font-weight: 700;
+    align-items: center;
+    font-size: 1.2rem;
+    border: 3px solid rgba(255, 255, 255, 0.5);
+}
+
+.fa-hourglass{
+    margin-right: 1em;
 }
 
 
