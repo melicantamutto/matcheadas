@@ -203,8 +203,8 @@ body {
     body{
         height: fit-content;
     }
-    .main-container{
+    /* .main-container{
         flex-direction: row;
         flex-wrap: wrap;
-    }
+    } */
 }

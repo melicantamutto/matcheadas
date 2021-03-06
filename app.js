@@ -11,6 +11,7 @@ const clock = document.getElementById("clock");
 let time;
 let maxTime = 30;
 let pause = 0;
+let callModal = true;
 
 const timer = (seconds) => {
   clearInterval(time);
@@ -94,6 +95,7 @@ welcomeText.innerHTML =
   "En MatcheADAs tu objetivo es juntar tres o más ítems del mismo tipo, ya sea en fila o columna. Para eso, selecciona un ítem y a continuación un ítem adyacente para intercambiarlos de lugar. <br /> <br /> Si se forma un grupo, esos ítems se eliminarán y ganarás puntos. ¡Sigue armando grupos de 3 o más antes de que se acabe el tiempo!<br /> <br /> <strong>Controles</strong> <br /> Click izquierdo: selección <br />Enter o Espacio: selección <br /> Flechas o WASD: movimiento e intercambio";
 
 const welcomeModal = () => {
+  clearInterval(time);
   swal({
     title: "¡Bienvenida!",
     content: welcomeText,
@@ -101,28 +103,16 @@ const welcomeModal = () => {
     className: "modal",
     closeOnClickOutside: false,
     closeOnEsc: false,
-  }).then((value) => {
-    if (value) {
+  }).then(() => {
+    if (callModal) {
       difficultyModal();
+      return callModal = false;
+    } else if (!callModal){
+      timer(pause);
     }
   });
 };
 
-// MODAL INFORMATION (SAME AS WELCOME, DIFFERENT PROMISE)
-
-const infoModal = () => {
-  clearInterval(time);
-  swal({
-    title: "¿Qué hago?",
-    content: welcomeText,
-    button: "A jugar!",
-    className: "modal",
-    closeOnClickOutside: false,
-    closeOnEsc: false,
-  }).then((value) => {
-    timer(pause);
-  });
-};
 
 // MODAL DIFICULTY
 
@@ -243,9 +233,21 @@ window.addEventListener("load", () => {
 });
 
 helpButton.addEventListener("click", () => {
-  infoModal();
+  welcomeModal();
 });
 
 restartButton.addEventListener("click", () => {
   restartModal();
 });
+
+
+// // emoji events
+
+// let emojis = grid.children;
+
+// for (let i = 0; i < emojis.length; i++) {
+//   emojis[i].addEventListener('click', () =>{
+//     alert('click')
+//   })
+  
+// }
