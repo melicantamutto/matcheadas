@@ -47,6 +47,8 @@ let difficulty = 0;
 const food = [pizza, hamburguer, sushi, pasta, sandwich, salad];
 
 const grid = document.getElementById("grid");
+let gridArray = [];
+
 
 // GRID FUNCTIONS
 
@@ -65,22 +67,44 @@ const cleanGrid = () => {
 // Styling each emoji
 
 const stylingGrid = (difficulty, emoji) => {
+  grid.style.height = `${grid.clientWidth}px`;
   emoji.style.width = `calc(${grid.clientWidth}px / ${difficulty} - 1.01rem)`;
   emoji.style.height = `calc(${grid.clientWidth}px  / ${difficulty} - 1.01rem)`;
-  grid.style.height = `${grid.clientWidth}px`;
+  
 };
+
+// Creating emoji squares
+
+const createSquare = (x, y, gridArray) =>{
+  const newP = document.createElement("p");
+  newP.dataset.x = x;
+  newP.dataset.y = y;
+  stylingGrid(difficulty, newP);
+  newP.innerHTML = gridArray[x][y];
+  return newP
+}
+
+
+// Printing grid in HTML
+
+const printgrid = (gridArray) =>{
+  for (let i = 0; i < gridArray.length; i++) {
+    for (let j = 0; j < gridArray[i].length; j++) {
+      grid.append(createSquare(i, j, gridArray))
+    }
+  }
+}
 
 // Creating grid
 
 const createGrid = (difficulty) => {
   for (let i = 0; i < difficulty; i++) {
+    gridArray[i] = [];
     for (let j = 0; j < difficulty; j++) {
-      const newP = document.createElement("p");
-      stylingGrid(difficulty, newP);
-      newP.innerHTML = food[getRandomInt(0, 6)];
-      grid.appendChild(newP);
+      gridArray[i][j] = food[getRandomInt(0, 6)];
     }
   }
+  printgrid(gridArray)
   twemoji.parse(document.body);
   timer(maxTime);
   return difficulty;
