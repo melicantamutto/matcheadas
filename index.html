@@ -1,48 +1,55 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet"> 
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
     <!-- Styles sheet -->
-    <link rel="stylesheet" href="./styles/main.css">
+    <link rel="stylesheet" href="./styles/main.css" />
     <title>MatcheADAs</title>
-</head>
-<body>
+  </head>
+  <body>
     <main class="main-container">
-        <header>
-            <h1 class="main-title">MatcheADAs</h1>
-        </header>
-        <section class="control-container">
-            <section class="control-stats-container">
-                <p class="stat-title">Combo x<span id="combo-counter">1</span></p>
-                <p class="stat-title">Puntos: <span id="points-counter">0</span></p>
-            </section>
-            <section class="control-icons-container">
-                <i class="fas fa-question-circle stat-icon" id="help-button"></i>
-                <i class="fas fa-redo-alt stat-icon" id="restart-button"></i>
-            </section>
+      <header>
+        <h1 class="main-title">MatcheADAs</h1>
+      </header>
+      <section class="control-container">
+        <section class="control-stats-container">
+          <p class="stat-title">Combo x<span id="combo-counter">1</span></p>
+          <p class="stat-title">Puntos: <span id="points-counter">0</span></p>
         </section>
-        <section class="grid-container" id="grid">
+        <section class="control-icons-container">
+          <i class="fas fa-question-circle stat-icon" id="help-button"></i>
+          <i class="fas fa-redo-alt stat-icon" id="restart-button"></i>
+        </section>
+      </section>
+      <section class="grid-container" id="grid"></section>
+      <section class="clock-container">
+        <i class="far fa-hourglass"></i>
+        <p class="clock" id="clock">0:30</p>
+      </section>
+    </main>
 
-        </section>
-        <section class="clock-container">
-            <i class="far fa-hourglass"></i>
-            <p class="clock" id="clock">0:30</p>
-        </section>
-    </main> 
-   
     <!-- Script Fontawsome -->
-    <script src="https://kit.fontawesome.com/a484224e5b.js" crossorigin="anonymous"></script>
+    <script
+      src="https://kit.fontawesome.com/a484224e5b.js"
+      crossorigin="anonymous"
+    ></script>
     <!-- Script Twemoji -->
-    <script src="https://twemoji.maxcdn.com/v/latest/twemoji.min.js" crossorigin="anonymous"></script>
+    <script
+      src="https://twemoji.maxcdn.com/v/latest/twemoji.min.js"
+      crossorigin="anonymous"
+    ></script>
     <!-- Script Sweetalert -->
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <!-- Script App -->
     <script src="app.js"></script>
-</body>
+  </body>
 </html>
