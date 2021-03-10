@@ -87,7 +87,7 @@ body {
 }
 
 .grid-container>* {
-    margin: 0.5rem;
+    padding: 0.5rem;
 }
 
 .grid-container img {
@@ -95,8 +95,11 @@ body {
 }
 
 /* Emoji focus style */
-.grid-container > *:focus{
-    border: 2px solid var(--darkViolet);
+.clicked {
+    /* box-shadow: 0px 0px 1px 3px var(--darkViolet); */
+    /* background-color: rgba(77, 49, 77, 0.9); */
+    border: 1px solid var(--darkViolet);
+    border-radius: 10px;
 }
 
 /* CLOCK STYLES */
@@ -184,6 +187,7 @@ body {
     .clock-container {
         font-size: 1rem;
     }
+
     .main-title {
         font-size: 2.5rem;
     }
@@ -204,10 +208,11 @@ body {
     }
 }
 
-@media (orientation: landscape){
-    body{
+@media (orientation: landscape) {
+    body {
         height: fit-content;
     }
+
     /* .main-container{
         flex-direction: row;
         flex-wrap: wrap;
