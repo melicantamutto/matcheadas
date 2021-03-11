@@ -88,6 +88,7 @@ body {
 
 .grid-container>* {
     padding: 0.5rem;
+    transition: all 0.2s ease-in-out;
 }
 
 .grid-container img {

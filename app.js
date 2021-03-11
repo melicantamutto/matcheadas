@@ -13,7 +13,7 @@ const pointsCounter = document.getElementById("points-counter");
 
 const clock = document.getElementById("clock");
 let time;
-let maxTime = 30;
+let maxTime = 1200;
 let pause = 0;
 let callModal = true;
 
@@ -56,16 +56,44 @@ const isNextTo = (emoji1, emoji2) => {
   ) {
     return true;
   } else {
+    emoji1.classList.remove('clicked')
     return false;
   }
 };
 
-// EMOJI CLICK EVENTS
+// SWAP EMOJIS
+
+const swapEmojis = (emoji1, emoji2) =>{
+  // Getting emoji's datasets
+  const firstX = Number(emoji1.dataset.x);
+  const firstY = Number(emoji1.dataset.y);
+  const secondX = Number(emoji2.dataset.x);
+  const secondY = Number(emoji2.dataset.y);
+
+  // Changing the grid array in JS
+  let tempEmoji = gridArray[firstX][firstY];
+  gridArray[firstX][firstY] = gridArray[secondX][secondY];
+  gridArray[secondX][secondY] = tempEmoji;
+
+  // Changing the HTML grid (visually)
+  const innerEmoji1 = emoji1.innerHTML;
+  emoji1.innerHTML = emoji2.innerHTML;
+  emoji2.innerHTML = innerEmoji1;
+}
+
+
+
+
+
+
+// EMOJI CLICK EVENT
 
 const emojiClick = (e) => {
   let clickedEmoji = document.querySelector(".clicked");
   if (clickedEmoji) {
-    console.log(isNextTo(clickedEmoji, e.target.parentNode));
+    if(isNextTo(clickedEmoji, e.target.parentNode)){
+      swapEmojis(clickedEmoji, e.target.parentNode);
+    }
   } else {
     e.target.parentNode.classList.add("clicked");
   }
