@@ -56,14 +56,14 @@ const isNextTo = (emoji1, emoji2) => {
   ) {
     return true;
   } else {
-    emoji1.classList.remove('clicked')
+    emoji1.classList.remove("clicked");
     return false;
   }
 };
 
 // SWAP EMOJIS
 
-const swapEmojis = (emoji1, emoji2) =>{
+const swapEmojis = (emoji1, emoji2) => {
   // Getting emoji's datasets
   const firstX = Number(emoji1.dataset.x);
   const firstY = Number(emoji1.dataset.y);
@@ -79,20 +79,113 @@ const swapEmojis = (emoji1, emoji2) =>{
   const innerEmoji1 = emoji1.innerHTML;
   emoji1.innerHTML = emoji2.innerHTML;
   emoji2.innerHTML = innerEmoji1;
-}
+};
 
+// CHECKING COINCIDENCES
 
+const checkHorizontal = () => {
+  console.log(gridArray);
+  for (let i = 0; i < gridArray.length; i++) {
+    for (let j = 0; j < gridArray[i].length; j++) {
+      if (
+        gridArray[i][j] === gridArray[i][j + 1] &&
+        gridArray[i][j] === gridArray[i][j + 2] &&
+        gridArray[i][j] === gridArray[i][j + 3] &&
+        gridArray[i][j] === gridArray[i][j + 4]
+      ) {
+        // console.log(gridArray[i][j]);
+        // document.querySelector(`div[data-x="${i}"][data-y="${j}"]`).innerHTML =
+        //   "";
+        // document.querySelector(
+        //   `div[data-x="${i}"][data-y="${j + 1}"]`
+        // ).innerHTML = "";
+        // document.querySelector(
+        //   `div[data-x="${i}"][data-y="${j + 2}"]`
+        // ).innerHTML = "";
+        // document.querySelector(
+        //   `div[data-x="${i}"][data-y="${j + 3}"]`
+        // ).innerHTML = "";
+        // document.querySelector(
+        //   `div[data-x="${i}"][data-y="${j + 4}"]`
+        // ).innerHTML = "";
+        gridArray[i][j] = "";
+        gridArray[i][j + 1] = "";
+        gridArray[i][j + 2] = "";
+        gridArray[i][j + 3] = "";
+        gridArray[i][j + 4] = "";
+        caerElementosHorizontal(i, j, j + 1, j + 2, j+4);
+        console.log("Encontre 5");
+      } else if (
+        gridArray[i][j] === gridArray[i][j + 1] &&
+        gridArray[i][j] === gridArray[i][j + 2] &&
+        gridArray[i][j] === gridArray[i][j + 3]
+      ) {
+        // console.log(gridArray[i][j]);
+        // document.querySelector(`div[data-x="${i}"][data-y="${j}"]`).innerHTML =
+        //   "";
+        // document.querySelector(
+        //   `div[data-x="${i}"][data-y="${j + 1}"]`
+        // ).innerHTML = "";
+        // document.querySelector(
+        //   `div[data-x="${i}"][data-y="${j + 2}"]`
+        // ).innerHTML = "";
+        // document.querySelector(
+        //   `div[data-x="${i}"][data-y="${j + 3}"]`
+        // ).innerHTML = "";
+        gridArray[i][j] = "";
+        gridArray[i][j + 1] = "";
+        gridArray[i][j + 2] = "";
+        gridArray[i][j + 3] = "";
+        caerElementosHorizontal(i, j, j + 1, j + 2, j+3);
+        console.log("Encontre 4");
+      } else if (
+        gridArray[i][j] === gridArray[i][j + 1] &&
+        gridArray[i][j] === gridArray[i][j + 2]
+      ) {
+        // document.querySelector(`div[data-x="${i}"][data-y="${j}"]`).innerHTML =
+        //   "";
+        // document.querySelector(
+        //   `div[data-x="${i}"][data-y="${j + 1}"]`
+        // ).innerHTML = "";
+        // document.querySelector(
+        //   `div[data-x="${i}"][data-y="${j + 2}"]`
+        // ).innerHTML = "";
+        gridArray[i][j] = "";
+        gridArray[i][j + 1] = "";
+        gridArray[i][j + 2] = "";
+        console.log("Encontre 3");
+        caerElementosHorizontal(i, j, j + 1, j + 2);
+        console.log(gridArray);
+      }
+    }
+  }
+};
 
+const caerElementosHorizontal = (x, ...rest) => {
+  for (let i = x; i >= 0; i--) {
+    rest.forEach((el) => {
+      gridArray[i][el] = i !== 0 ? gridArray[i - 1][el] : food[getRandomInt(0, 6)];
+    });
+  }
+};
 
-
+const caerElementosVertical = (x, ...rest) => {
+  for (let i = x; i >= 0; i--) {
+    rest.forEach((el) => {
+      gridArray[i][el] = i !== 0 ? gridArray[i - 1][el] : 4;
+    });
+  }
+};
 
 // EMOJI CLICK EVENT
 
 const emojiClick = (e) => {
   let clickedEmoji = document.querySelector(".clicked");
   if (clickedEmoji) {
-    if(isNextTo(clickedEmoji, e.target.parentNode)){
+    if (isNextTo(clickedEmoji, e.target.parentNode)) {
       swapEmojis(clickedEmoji, e.target.parentNode);
+      checkHorizontal();
+      clickedEmoji.classList.remove("clicked");
     }
   } else {
     e.target.parentNode.classList.add("clicked");
@@ -147,7 +240,7 @@ const createSquare = (x, y, gridArray) => {
   newDiv.dataset.y = y;
   stylingGrid(difficulty, newDiv);
   newDiv.innerHTML = gridArray[x][y];
-  newDiv.classList.add('square');
+  newDiv.classList.add("square");
   newDiv.addEventListener("click", emojiClick);
   return newDiv;
 };
@@ -171,6 +264,7 @@ const createGrid = (difficulty) => {
       gridArray[i][j] = food[getRandomInt(0, 6)];
     }
   }
+  checkHorizontal();
   printgrid(gridArray);
   twemoji.parse(document.body);
   timer(maxTime);
