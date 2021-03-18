@@ -13,7 +13,7 @@ const pointsCounter = document.getElementById("points-counter");
 
 const clock = document.getElementById("clock");
 let time;
-let maxTime = 1200;
+let maxTime = 30;
 let pause = 0;
 let callModal = true;
 
@@ -71,7 +71,7 @@ const swapEmojis = (emoji1, emoji2) => {
   const secondY = Number(emoji2.dataset.y);
 
   // Changing the grid array in JS
-  let tempEmoji = gridArray[firstX][firstY];
+  const tempEmoji = gridArray[firstX][firstY];
   gridArray[firstX][firstY] = gridArray[secondX][secondY];
   gridArray[secondX][secondY] = tempEmoji;
 
@@ -83,8 +83,16 @@ const swapEmojis = (emoji1, emoji2) => {
 
 // CHECKING COINCIDENCES
 
+let points =0;
+let columnToDrop = 0;
+let rowsToReplace = [];
+
+let rowToDrop = 0;
+let columnsToReplace = [];
+
 const checkHorizontal = () => {
-  console.log(gridArray);
+  columnToDrop = 0;
+  rowsToReplace = [];
   for (let i = 0; i < gridArray.length; i++) {
     for (let j = 0; j < gridArray[i].length; j++) {
       if (
@@ -93,88 +101,149 @@ const checkHorizontal = () => {
         gridArray[i][j] === gridArray[i][j + 3] &&
         gridArray[i][j] === gridArray[i][j + 4]
       ) {
-        // console.log(gridArray[i][j]);
-        // document.querySelector(`div[data-x="${i}"][data-y="${j}"]`).innerHTML =
-        //   "";
-        // document.querySelector(
-        //   `div[data-x="${i}"][data-y="${j + 1}"]`
-        // ).innerHTML = "";
-        // document.querySelector(
-        //   `div[data-x="${i}"][data-y="${j + 2}"]`
-        // ).innerHTML = "";
-        // document.querySelector(
-        //   `div[data-x="${i}"][data-y="${j + 3}"]`
-        // ).innerHTML = "";
-        // document.querySelector(
-        //   `div[data-x="${i}"][data-y="${j + 4}"]`
-        // ).innerHTML = "";
+        columnToDrop = i;
+        rowsToReplace.push(j, j + 1, j + 2, j + 3, j + 4);
         gridArray[i][j] = "";
         gridArray[i][j + 1] = "";
         gridArray[i][j + 2] = "";
         gridArray[i][j + 3] = "";
         gridArray[i][j + 4] = "";
-        caerElementosHorizontal(i, j, j + 1, j + 2, j+4);
-        console.log("Encontre 5");
       } else if (
         gridArray[i][j] === gridArray[i][j + 1] &&
         gridArray[i][j] === gridArray[i][j + 2] &&
         gridArray[i][j] === gridArray[i][j + 3]
       ) {
-        // console.log(gridArray[i][j]);
-        // document.querySelector(`div[data-x="${i}"][data-y="${j}"]`).innerHTML =
-        //   "";
-        // document.querySelector(
-        //   `div[data-x="${i}"][data-y="${j + 1}"]`
-        // ).innerHTML = "";
-        // document.querySelector(
-        //   `div[data-x="${i}"][data-y="${j + 2}"]`
-        // ).innerHTML = "";
-        // document.querySelector(
-        //   `div[data-x="${i}"][data-y="${j + 3}"]`
-        // ).innerHTML = "";
+
+        columnToDrop = i;
+        rowsToReplace.push(j, j + 1, j + 2, j + 3);
         gridArray[i][j] = "";
         gridArray[i][j + 1] = "";
         gridArray[i][j + 2] = "";
         gridArray[i][j + 3] = "";
-        caerElementosHorizontal(i, j, j + 1, j + 2, j+3);
-        console.log("Encontre 4");
       } else if (
         gridArray[i][j] === gridArray[i][j + 1] &&
         gridArray[i][j] === gridArray[i][j + 2]
       ) {
-        // document.querySelector(`div[data-x="${i}"][data-y="${j}"]`).innerHTML =
-        //   "";
-        // document.querySelector(
-        //   `div[data-x="${i}"][data-y="${j + 1}"]`
-        // ).innerHTML = "";
-        // document.querySelector(
-        //   `div[data-x="${i}"][data-y="${j + 2}"]`
-        // ).innerHTML = "";
+        columnToDrop = i;
+        rowsToReplace.push(j, j + 1, j + 2);
         gridArray[i][j] = "";
         gridArray[i][j + 1] = "";
         gridArray[i][j + 2] = "";
-        console.log("Encontre 3");
-        caerElementosHorizontal(i, j, j + 1, j + 2);
-        console.log(gridArray);
       }
     }
   }
+  dropHorizontal(columnToDrop, rowsToReplace);
+  return columnToDrop, rowsToReplace;
 };
 
-const caerElementosHorizontal = (x, ...rest) => {
+const checkVertical = () => {
+  //   for (let i = 0; i < gridArray.length; i++) {
+  //     for (let j = 0; j < gridArray[i].length; j++) {
+  //       if (
+  //         gridArray[i][j] === gridArray[i + 1][j] &&
+  //         gridArray[i][j] === gridArray[i + 2][j] &&
+  //         gridArray[i][j] === gridArray[i + 3][j] &&
+  //         gridArray[i][j] === gridArray[i + 4][j]
+  //       ) {
+  //         gridArray[i][j] = "";
+  //         gridArray[i + 1][j] = "";
+  //         gridArray[i + 2][j] = "";
+  //         gridArray[i + 3][j] = "";
+  //         gridArray[i + 4][j] = "";
+  //         dropVertical([i, i + 1, i + 2, i + 3, i + 4]);
+  //       } else if (
+  //         gridArray[i][j] === gridArray[i + 1][j] &&
+  //         gridArray[i][j] === gridArray[i + 2][j] &&
+  //         gridArray[i][j] === gridArray[i + 3][j]
+  //       ) {
+  //         gridArray[i][j] = "";
+  //         gridArray[i + 1][j] = "";
+  //         gridArray[i + 2][j] = "";
+  //         gridArray[i + 3][j] = "";
+  //         dropVertical([i, i + 1, i + 2, i + 3]);
+  //       } else if (
+  //         gridArray[i][j] === gridArray[i + 1][j] &&
+  //         gridArray[i][j] === gridArray[i + 2][j]
+  //       ) {
+  //         gridArray[i][j] = "";
+  //         gridArray[i + 1][j] = "";
+  //         gridArray[i + 2][j] = "";
+  //         dropVertical([i, i + 1, i + 2]);
+  //       }
+  //     }
+  //   }
+};
+
+const dropHorizontal = (x, rest) => {
   for (let i = x; i >= 0; i--) {
     rest.forEach((el) => {
-      gridArray[i][el] = i !== 0 ? gridArray[i - 1][el] : food[getRandomInt(0, 6)];
+      gridArray[i][el] =
+      i !== 0 ? gridArray[i - 1][el] : food[getRandomInt(0, 6)];
+    });
+  }
+  
+};
+
+const dropHorizontalHTML = (x, rest) => {
+  rest.forEach((el) => {
+    points +=100;
+    let toClean = grid.querySelector(
+      `.square[data-x= "${x}"][data-y= "${el}"]`
+      );
+      toClean.innerHTML = "";
+      pointsCounter.innerHTML = `${points}`;
+    });
+    setTimeout(() => {
+      for (let i = x; i >= 0; i--) {
+        rest.forEach((el) => {
+        let empty = grid.querySelector(
+          `.square[data-x= "${i}"][data-y= "${el}"]`
+        );
+        let full = grid.querySelector(
+          `.square[data-x= "${i - 1}"][data-y= "${el}"]`
+        );
+        empty.innerHTML = i !== 0 ? full.innerHTML : 2;
+      });
+    }
+  }, 1000);
+
+  return points
+};
+
+const dropVertical = (...rest) => {
+  for (let i = rest[rest.length - 1]; i >= 0; i--) {
+    rest.reverse.forEach((el) => {
+      gridArray[el][j] =
+        i !== 0 ? gridArray[i - 1][j] : food[getRandomInt(0, 6)];
+      console.log("drop");
     });
   }
 };
 
-const caerElementosVertical = (x, ...rest) => {
-  for (let i = x; i >= 0; i--) {
-    rest.forEach((el) => {
-      gridArray[i][el] = i !== 0 ? gridArray[i - 1][el] : 4;
+const dropVerticalHTML = (x, rest) => {
+  rest.forEach((el) => {
+    points +=100;
+    let toClean = grid.querySelector(
+      `.square[data-x= "${el}"][data-y= "${x}"]`
+      );
+      toClean.innerHTML = "";
+      pointsCounter.innerHTML = `${points}`;
     });
-  }
+    setTimeout(() => {
+      for (let i = x; i >= 0; i--) {
+        rest.forEach((el) => {
+        let empty = grid.querySelector(
+          `.square[data-x= "${i}"][data-y= "${el}"]`
+        );
+        let full = grid.querySelector(
+          `.square[data-x= "${i - 1}"][data-y= "${el}"]`
+        );
+        empty.innerHTML = i !== 0 ? full.innerHTML : 2;
+      });
+    }
+  }, 1000);
+
+  return points
 };
 
 // EMOJI CLICK EVENT
@@ -185,6 +254,8 @@ const emojiClick = (e) => {
     if (isNextTo(clickedEmoji, e.target.parentNode)) {
       swapEmojis(clickedEmoji, e.target.parentNode);
       checkHorizontal();
+      dropHorizontalHTML(columnToDrop, rowsToReplace);
+      checkVertical();
       clickedEmoji.classList.remove("clicked");
     }
   } else {
@@ -228,8 +299,8 @@ const cleanGrid = () => {
 
 const stylingGrid = (difficulty, emoji) => {
   grid.style.height = `${grid.clientWidth}px`;
-  emoji.style.width = `calc(${grid.clientWidth}px / ${difficulty})`;
-  emoji.style.height = `calc(${grid.clientWidth}px  / ${difficulty})`;
+  emoji.style.width = `calc(${grid.clientWidth}px / ${difficulty} - 0.02px)`;
+  emoji.style.height = `calc(${grid.clientWidth}px  / ${difficulty} - 0.02px)`;
 };
 
 // Creating emoji squares
@@ -258,13 +329,16 @@ const printgrid = (gridArray) => {
 // Creating grid
 
 const createGrid = (difficulty) => {
+  cleanGrid();
   for (let i = 0; i < difficulty; i++) {
     gridArray[i] = [];
     for (let j = 0; j < difficulty; j++) {
       gridArray[i][j] = food[getRandomInt(0, 6)];
     }
   }
+  console.log(gridArray);
   checkHorizontal();
+  checkVertical();
   printgrid(gridArray);
   twemoji.parse(document.body);
   timer(maxTime);
@@ -297,6 +371,7 @@ const welcomeModal = () => {
     }
   });
 };
+console.log(difficulty);
 
 // MODAL DIFICULTY
 
@@ -318,7 +393,6 @@ const difficultyModal = () => {
         value: "hard",
       },
     },
-    className: "modal",
     closeOnClickOutside: false,
     closeOnEsc: false,
   }).then((value) => {
@@ -339,7 +413,6 @@ const difficultyModal = () => {
     }
   });
 };
-
 // MODAL RESTART GAME
 
 const restartModal = () => {
@@ -357,7 +430,6 @@ const restartModal = () => {
         value: "newGame",
       },
     },
-    className: "modal",
     closeOnClickOutside: false,
     closeOnEsc: false,
   }).then((value) => {
@@ -380,7 +452,7 @@ const gameOverModal = () => {
   clearInterval(time);
   swal({
     title: "¡Juego terminado!",
-    text: `Puntaje final: `, //'${finalScore}'
+    text: `Puntaje final: ${points}`, 
     buttons: {
       newGame: {
         text: "Nuevo Juego",
@@ -423,3 +495,6 @@ helpButton.addEventListener("click", () => {
 restartButton.addEventListener("click", () => {
   restartModal();
 });
+
+// PRINTING GAME INFO 
+
