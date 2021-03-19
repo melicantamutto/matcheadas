@@ -81,9 +81,10 @@ const swapEmojis = (emoji1, emoji2) => {
   emoji2.innerHTML = innerEmoji1;
 };
 
+
 // CHECKING COINCIDENCES
 
-let points =0;
+let points = 0;
 let columnToDrop = 0;
 let rowsToReplace = [];
 
@@ -113,7 +114,6 @@ const checkHorizontal = () => {
         gridArray[i][j] === gridArray[i][j + 2] &&
         gridArray[i][j] === gridArray[i][j + 3]
       ) {
-
         columnToDrop = i;
         rowsToReplace.push(j, j + 1, j + 2, j + 3);
         gridArray[i][j] = "";
@@ -132,130 +132,135 @@ const checkHorizontal = () => {
       }
     }
   }
-  dropHorizontal(columnToDrop, rowsToReplace);
   return columnToDrop, rowsToReplace;
 };
 
 const checkVertical = () => {
-  //   for (let i = 0; i < gridArray.length; i++) {
-  //     for (let j = 0; j < gridArray[i].length; j++) {
-  //       if (
-  //         gridArray[i][j] === gridArray[i + 1][j] &&
-  //         gridArray[i][j] === gridArray[i + 2][j] &&
-  //         gridArray[i][j] === gridArray[i + 3][j] &&
-  //         gridArray[i][j] === gridArray[i + 4][j]
-  //       ) {
-  //         gridArray[i][j] = "";
-  //         gridArray[i + 1][j] = "";
-  //         gridArray[i + 2][j] = "";
-  //         gridArray[i + 3][j] = "";
-  //         gridArray[i + 4][j] = "";
-  //         dropVertical([i, i + 1, i + 2, i + 3, i + 4]);
-  //       } else if (
-  //         gridArray[i][j] === gridArray[i + 1][j] &&
-  //         gridArray[i][j] === gridArray[i + 2][j] &&
-  //         gridArray[i][j] === gridArray[i + 3][j]
-  //       ) {
-  //         gridArray[i][j] = "";
-  //         gridArray[i + 1][j] = "";
-  //         gridArray[i + 2][j] = "";
-  //         gridArray[i + 3][j] = "";
-  //         dropVertical([i, i + 1, i + 2, i + 3]);
-  //       } else if (
-  //         gridArray[i][j] === gridArray[i + 1][j] &&
-  //         gridArray[i][j] === gridArray[i + 2][j]
-  //       ) {
-  //         gridArray[i][j] = "";
-  //         gridArray[i + 1][j] = "";
-  //         gridArray[i + 2][j] = "";
-  //         dropVertical([i, i + 1, i + 2]);
-  //       }
-  //     }
-  //   }
+  rowToDrop = 0;
+  columnsToReplace = [];
+  let coincidences = 0;
+  for (let j = 0; j < gridArray[0].length; j++) {
+    for (let i = 0; i < gridArray.length; i++) {
+      for (let u = 0; u < gridArray.length; u++) {
+        if (gridArray[i][j] === gridArray[u][j]) {
+          coincidences++;
+          columnsToReplace.push(Number(u));
+          rowToDrop = j;
+        } else {
+          if (coincidences >= 3) {
+            return columnsToReplace, rowToDrop;
+          } else {
+            rowToDrop = 0;
+            columnsToReplace = [];
+          }
+        }
+      }
+    }
+  }
+  console.log(columnsToReplace);
+  return rowToDrop, columnsToReplace
 };
 
 const dropHorizontal = (x, rest) => {
   for (let i = x; i >= 0; i--) {
     rest.forEach((el) => {
       gridArray[i][el] =
-      i !== 0 ? gridArray[i - 1][el] : food[getRandomInt(0, 6)];
+        i !== 0 ? gridArray[i - 1][el] : food[getRandomInt(0, 6)];
     });
   }
-  
 };
 
-const dropHorizontalHTML = (x, rest) => {
-  rest.forEach((el) => {
-    points +=100;
-    let toClean = grid.querySelector(
-      `.square[data-x= "${x}"][data-y= "${el}"]`
-      );
-      toClean.innerHTML = "";
-      pointsCounter.innerHTML = `${points}`;
-    });
-    setTimeout(() => {
-      for (let i = x; i >= 0; i--) {
-        rest.forEach((el) => {
-        let empty = grid.querySelector(
-          `.square[data-x= "${i}"][data-y= "${el}"]`
-        );
-        let full = grid.querySelector(
-          `.square[data-x= "${i - 1}"][data-y= "${el}"]`
-        );
-        empty.innerHTML = i !== 0 ? full.innerHTML : 2;
-      });
-    }
-  }, 1000);
-
-  return points
-};
-
-const dropVertical = (...rest) => {
-  for (let i = rest[rest.length - 1]; i >= 0; i--) {
-    rest.reverse.forEach((el) => {
-      gridArray[el][j] =
-        i !== 0 ? gridArray[i - 1][j] : food[getRandomInt(0, 6)];
+const caerElementosVertical = (col, array) => {
+  const COL = parseInt(col)
+  for (let i = Math.max(...array); i >= 0; i--) {
+      grid[i][COL] =  grid[i - array.length] ?  grid[i - array.length][COL] : numberRandom(icons.length - 1)
+  }
+}
+const dropVertical = (x, ...rest) => {
+  const restReverse = rest.reverse();
+  for (let i = restReverse[0]; i >= 0; i--) {
+    console.log()
+    restReverse.forEach((el) => {
+      gridArray[el][x] =
+        i !== 0 ? gridArray[i - 1][x] : food[getRandomInt(0, 6)];
       console.log("drop");
     });
   }
+  return gridArray;
 };
 
-const dropVerticalHTML = (x, rest) => {
-  rest.forEach((el) => {
-    points +=100;
-    let toClean = grid.querySelector(
-      `.square[data-x= "${el}"][data-y= "${x}"]`
-      );
-      toClean.innerHTML = "";
-      pointsCounter.innerHTML = `${points}`;
-    });
-    setTimeout(() => {
-      for (let i = x; i >= 0; i--) {
-        rest.forEach((el) => {
+const printNewEmoji = (j, slot) => {
+  slot.innerHTML = gridArray[0][j];
+  twemoji.parse(document.body);
+  return slot.innerHTML;
+};
+
+const cleanEmojis = (x, rest) => {
+  rest.forEach((y) => {
+    points += 100;
+    let toClean = grid.querySelector(`.square[data-x= "${x}"][data-y= "${y}"]`);
+    toClean.innerHTML = "";
+    pointsCounter.innerHTML = `${points}`;
+  });
+  return points;
+};
+
+const dropHorizontalHTML = (x, rest) => {
+  cleanEmojis(x, rest);
+  setTimeout(() => {
+    for (let i = x; i >= 0; i--) {
+      rest.forEach((el) => {
         let empty = grid.querySelector(
           `.square[data-x= "${i}"][data-y= "${el}"]`
         );
         let full = grid.querySelector(
           `.square[data-x= "${i - 1}"][data-y= "${el}"]`
         );
-        empty.innerHTML = i !== 0 ? full.innerHTML : 2;
+        empty.innerHTML = i !== 0 ? full.innerHTML : printNewEmoji(el, empty);
       });
     }
-  }, 1000);
+  }, 800);
+};
 
-  return points
+const dropVerticalHTML = (x, rest) => {
+  // cleanEmojis(x, rest);
+  // setTimeout(() => {
+  //   for (let i = x; i >= 0; i--) {
+  //     rest.forEach((el) => {
+  //       let empty = grid.querySelector(
+  //         `.square[data-x= "${i}"][data-y= "${el}"]`
+  //       );
+  //       let full = grid.querySelector(
+  //         `.square[data-x= "${i - 1}"][data-y= "${el}"]`
+  //       );
+  //       empty.innerHTML = i !== 0 ? full.innerHTML : 2;
+  //     });
+  //   }
+  // }, 1000);
 };
 
 // EMOJI CLICK EVENT
 
 const emojiClick = (e) => {
   let clickedEmoji = document.querySelector(".clicked");
+  let secondEmoji = e.target.parentNode;
   if (clickedEmoji) {
-    if (isNextTo(clickedEmoji, e.target.parentNode)) {
-      swapEmojis(clickedEmoji, e.target.parentNode);
+    if (isNextTo(clickedEmoji, secondEmoji)) {
+      swapEmojis(clickedEmoji, secondEmoji);
       checkHorizontal();
-      dropHorizontalHTML(columnToDrop, rowsToReplace);
       checkVertical();
+      if(rowsToReplace.length >=3 || columnsToReplace.length >= 3){
+        dropHorizontal(columnToDrop, rowsToReplace);
+        dropHorizontalHTML(columnToDrop, rowsToReplace);
+        dropVertical(rowToDrop, columnsToReplace);
+        dropVerticalHTML(rowToDrop, columnsToReplace);
+        console.log('change');
+      }else{
+        setTimeout(() =>{
+          swapEmojis(clickedEmoji, secondEmoji);
+        }, 600)
+        console.log('return');
+      }
       clickedEmoji.classList.remove("clicked");
     }
   } else {
@@ -336,9 +341,10 @@ const createGrid = (difficulty) => {
       gridArray[i][j] = food[getRandomInt(0, 6)];
     }
   }
-  console.log(gridArray);
   checkHorizontal();
+  dropHorizontal(columnToDrop, rowsToReplace)
   checkVertical();
+  dropVertical(rowToDrop, columnsToReplace)
   printgrid(gridArray);
   twemoji.parse(document.body);
   timer(maxTime);
@@ -371,7 +377,6 @@ const welcomeModal = () => {
     }
   });
 };
-console.log(difficulty);
 
 // MODAL DIFICULTY
 
@@ -452,7 +457,7 @@ const gameOverModal = () => {
   clearInterval(time);
   swal({
     title: "¡Juego terminado!",
-    text: `Puntaje final: ${points}`, 
+    text: `Puntaje final: ${points}`,
     buttons: {
       newGame: {
         text: "Nuevo Juego",
@@ -495,6 +500,3 @@ helpButton.addEventListener("click", () => {
 restartButton.addEventListener("click", () => {
   restartModal();
 });
-
-// PRINTING GAME INFO 
-
