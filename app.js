@@ -1,3 +1,5 @@
+// --------------------------GETTING ELEMENTS FROM HTML--------------------------
+
 // HTML ELEMENTS
 
 const helpButton = document.getElementById("help-button");
@@ -5,13 +7,17 @@ const restartButton = document.getElementById("restart-button");
 const comboCounter = document.getElementById("combo-counter");
 const pointsCounter = document.getElementById("points-counter");
 
-//  TIMER
+// --------------------------CREATING TIMER--------------------------
+
+//  TIMER ELEMENTS
 
 const clock = document.getElementById("clock");
 let time;
-let maxTime = 30;
+let maxTime = 1200;
 let pause = 0;
 let callModal = true;
+
+// TIMER FUNCTION
 
 const timer = (seconds) => {
   clearInterval(time);
@@ -33,6 +39,68 @@ const timer = (seconds) => {
   return pause;
 };
 
+// --------------------------GAME FUNCTIONS AND EVENTS--------------------------
+
+// IS EMOJI 1 NEXT TO EMOJI 2?
+
+const isNextTo = (emoji1, emoji2) => {
+  const firstX = Number(emoji1.dataset.x);
+  const firstY = Number(emoji1.dataset.y);
+  const secondX = Number(emoji2.dataset.x);
+  const secondY = Number(emoji2.dataset.y);
+  if (
+    (firstX === secondX && firstY === secondY + 1) ||
+    (firstX === secondX && firstY === secondY - 1) ||
+    (firstY === secondY && firstX === secondX + 1) ||
+    (firstY === secondY && firstX === secondX - 1)
+  ) {
+    return true;
+  } else {
+    emoji1.classList.remove('clicked')
+    return false;
+  }
+};
+
+// SWAP EMOJIS
+
+const swapEmojis = (emoji1, emoji2) =>{
+  // Getting emoji's datasets
+  const firstX = Number(emoji1.dataset.x);
+  const firstY = Number(emoji1.dataset.y);
+  const secondX = Number(emoji2.dataset.x);
+  const secondY = Number(emoji2.dataset.y);
+
+  // Changing the grid array in JS
+  let tempEmoji = gridArray[firstX][firstY];
+  gridArray[firstX][firstY] = gridArray[secondX][secondY];
+  gridArray[secondX][secondY] = tempEmoji;
+
+  // Changing the HTML grid (visually)
+  const innerEmoji1 = emoji1.innerHTML;
+  emoji1.innerHTML = emoji2.innerHTML;
+  emoji2.innerHTML = innerEmoji1;
+}
+
+
+
+
+
+
+// EMOJI CLICK EVENT
+
+const emojiClick = (e) => {
+  let clickedEmoji = document.querySelector(".clicked");
+  if (clickedEmoji) {
+    if(isNextTo(clickedEmoji, e.target.parentNode)){
+      swapEmojis(clickedEmoji, e.target.parentNode);
+    }
+  } else {
+    e.target.parentNode.classList.add("clicked");
+  }
+};
+
+// --------------------------CREATING GRID--------------------------
+
 // GRID ELEMENTS
 
 const pizza = "🍕";
@@ -48,7 +116,6 @@ const food = [pizza, hamburguer, sushi, pasta, sandwich, salad];
 
 const grid = document.getElementById("grid");
 let gridArray = [];
-
 
 // GRID FUNCTIONS
 
@@ -68,32 +135,32 @@ const cleanGrid = () => {
 
 const stylingGrid = (difficulty, emoji) => {
   grid.style.height = `${grid.clientWidth}px`;
-  emoji.style.width = `calc(${grid.clientWidth}px / ${difficulty} - 1.01rem)`;
-  emoji.style.height = `calc(${grid.clientWidth}px  / ${difficulty} - 1.01rem)`;
-  
+  emoji.style.width = `calc(${grid.clientWidth}px / ${difficulty})`;
+  emoji.style.height = `calc(${grid.clientWidth}px  / ${difficulty})`;
 };
 
 // Creating emoji squares
 
-const createSquare = (x, y, gridArray) =>{
-  const newP = document.createElement("p");
-  newP.dataset.x = x;
-  newP.dataset.y = y;
-  stylingGrid(difficulty, newP);
-  newP.innerHTML = gridArray[x][y];
-  return newP
-}
-
+const createSquare = (x, y, gridArray) => {
+  const newDiv = document.createElement("div");
+  newDiv.dataset.x = x;
+  newDiv.dataset.y = y;
+  stylingGrid(difficulty, newDiv);
+  newDiv.innerHTML = gridArray[x][y];
+  newDiv.classList.add('square');
+  newDiv.addEventListener("click", emojiClick);
+  return newDiv;
+};
 
 // Printing grid in HTML
 
-const printgrid = (gridArray) =>{
+const printgrid = (gridArray) => {
   for (let i = 0; i < gridArray.length; i++) {
     for (let j = 0; j < gridArray[i].length; j++) {
-      grid.append(createSquare(i, j, gridArray))
+      grid.append(createSquare(i, j, gridArray));
     }
   }
-}
+};
 
 // Creating grid
 
@@ -104,13 +171,13 @@ const createGrid = (difficulty) => {
       gridArray[i][j] = food[getRandomInt(0, 6)];
     }
   }
-  printgrid(gridArray)
+  printgrid(gridArray);
   twemoji.parse(document.body);
   timer(maxTime);
   return difficulty;
 };
 
-//SWEET ALERT
+// --------------------------CREATING ALERTS (Sweet Alerts)--------------------------
 
 // MODAL WELCOME
 
@@ -130,13 +197,12 @@ const welcomeModal = () => {
   }).then(() => {
     if (callModal) {
       difficultyModal();
-      return callModal = false;
-    } else if (!callModal){
+      return (callModal = false);
+    } else if (!callModal) {
       timer(pause);
     }
   });
 };
-
 
 // MODAL DIFICULTY
 
@@ -263,15 +329,3 @@ helpButton.addEventListener("click", () => {
 restartButton.addEventListener("click", () => {
   restartModal();
 });
-
-
-// // emoji events
-
-// let emojis = grid.children;
-
-// for (let i = 0; i < emojis.length; i++) {
-//   emojis[i].addEventListener('click', () =>{
-//     alert('click')
-//   })
-  
-// }
