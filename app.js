@@ -81,7 +81,6 @@ const swapEmojis = (emoji1, emoji2) => {
   emoji2.innerHTML = innerEmoji1;
 };
 
-
 // CHECKING COINCIDENCES
 
 let points = 0;
@@ -158,8 +157,10 @@ const checkVertical = () => {
     }
   }
   console.log(columnsToReplace);
-  return rowToDrop, columnsToReplace
+  return rowToDrop, columnsToReplace;
 };
+
+// DROPPING THE EMOJIS IN gridArray
 
 const dropHorizontal = (x, rest) => {
   for (let i = x; i >= 0; i--) {
@@ -170,30 +171,27 @@ const dropHorizontal = (x, rest) => {
   }
 };
 
-const caerElementosVertical = (col, array) => {
-  const COL = parseInt(col)
-  for (let i = Math.max(...array); i >= 0; i--) {
-      grid[i][COL] =  grid[i - array.length] ?  grid[i - array.length][COL] : numberRandom(icons.length - 1)
-  }
-}
 const dropVertical = (x, ...rest) => {
   const restReverse = rest.reverse();
   for (let i = restReverse[0]; i >= 0; i--) {
-    console.log()
+    console.log();
     restReverse.forEach((el) => {
       gridArray[el][x] =
         i !== 0 ? gridArray[i - 1][x] : food[getRandomInt(0, 6)];
-      console.log("drop");
     });
   }
   return gridArray;
 };
+
+// PRINTING NEW RANDOM EMOJIS IN HTML
 
 const printNewEmoji = (j, slot) => {
   slot.innerHTML = gridArray[0][j];
   twemoji.parse(document.body);
   return slot.innerHTML;
 };
+
+// CLEANING THE ELIMINATED EMOJIS (RETURNING POINTS)
 
 const cleanEmojis = (x, rest) => {
   rest.forEach((y) => {
@@ -204,6 +202,8 @@ const cleanEmojis = (x, rest) => {
   });
   return points;
 };
+
+// DROPPING THE EMOJIS VISUALLY IN HTML
 
 const dropHorizontalHTML = (x, rest) => {
   cleanEmojis(x, rest);
@@ -239,6 +239,21 @@ const dropVerticalHTML = (x, rest) => {
   // }, 1000);
 };
 
+// CHECK TIL THERE IS NO COINCIDENCES LEFT
+
+// const multipleCheck = () => {
+//   do {
+//     setTimeout(() => {
+//       checkHorizontal();
+//       checkVertical();
+//       dropHorizontal(columnToDrop, rowsToReplace);
+//       dropHorizontalHTML(columnToDrop, rowsToReplace);
+//       dropVertical(rowToDrop, columnsToReplace);
+//       dropVerticalHTML(rowToDrop, columnsToReplace);
+//     }, 2000)
+//   } while (rowsToReplace.length >= 3 || columnsToReplace.length >= 3)
+// }
+
 // EMOJI CLICK EVENT
 
 const emojiClick = (e) => {
@@ -249,17 +264,16 @@ const emojiClick = (e) => {
       swapEmojis(clickedEmoji, secondEmoji);
       checkHorizontal();
       checkVertical();
-      if(rowsToReplace.length >=3 || columnsToReplace.length >= 3){
+      if (rowsToReplace.length >= 3 || columnsToReplace.length >= 3) {
         dropHorizontal(columnToDrop, rowsToReplace);
         dropHorizontalHTML(columnToDrop, rowsToReplace);
         dropVertical(rowToDrop, columnsToReplace);
         dropVerticalHTML(rowToDrop, columnsToReplace);
-        console.log('change');
-      }else{
-        setTimeout(() =>{
+        multipleCheck();
+      } else {
+        setTimeout(() => {
           swapEmojis(clickedEmoji, secondEmoji);
-        }, 600)
-        console.log('return');
+        }, 600);
       }
       clickedEmoji.classList.remove("clicked");
     }
@@ -342,9 +356,9 @@ const createGrid = (difficulty) => {
     }
   }
   checkHorizontal();
-  dropHorizontal(columnToDrop, rowsToReplace)
+  dropHorizontal(columnToDrop, rowsToReplace);
   checkVertical();
-  dropVertical(rowToDrop, columnsToReplace)
+  dropVertical(rowToDrop, columnsToReplace);
   printgrid(gridArray);
   twemoji.parse(document.body);
   timer(maxTime);
