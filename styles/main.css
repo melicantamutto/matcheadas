@@ -94,6 +94,11 @@ body {
     width: 100%;
 }
 
+/* Emoji focus style */
+.grid-container > *:focus{
+    border: 2px solid var(--darkViolet);
+}
+
 /* CLOCK STYLES */
 
 .clock-container {
