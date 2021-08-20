@@ -13,7 +13,7 @@ const pointsCounter = document.getElementById("points-counter");
 
 const clock = document.getElementById("clock");
 let time;
-let maxTime = 30;
+let maxTime = 3000000;
 let pause = 0;
 let callModal = true;
 
@@ -63,7 +63,6 @@ const isNextTo = (emoji1, emoji2) => {
 // SWAP EMOJIS
 
 const swapEmojis = (emoji1, emoji2) => {
-  let { grid } = gridObj;
   // Getting emoji's datasets
   const firstX = Number(emoji1.dataset.x);
   const firstY = Number(emoji1.dataset.y);
@@ -71,9 +70,9 @@ const swapEmojis = (emoji1, emoji2) => {
   const secondY = Number(emoji2.dataset.y);
 
   // Changing the grid array in JS
-  const tempEmoji = grid[firstX][firstY];
-  grid[firstX][firstY] = grid[secondX][secondY];
-  grid[secondX][secondY] = tempEmoji;
+  const tempEmoji = gridObj.grid[firstX][firstY];
+  gridObj.grid[firstX][firstY] = gridObj.grid[secondX][secondY];
+  gridObj.grid[secondX][secondY] = tempEmoji;
 
   // Changing the HTML grid (visually)
   const innerEmoji1 = emoji1.innerHTML;
@@ -93,87 +92,99 @@ let gridObj = {
   columnsToReplace: [],
   points: points,
   difficulty: 0,
-  coincidencesFound: false
+  coincidencesHorizontal: false,
+  coincidencesVertical: false,
+  canMove: true,
 };
 
 const checkHorizontal = () => {
-  let { grid, rowsToReplace, coincidencesFound, columnToDrop } = gridObj;
+  let { grid } = gridObj;
+  gridObj.coincidencesHorizontal = false;
+  gridObj.rowsToReplace = [];
+  gridObj.columnToDrop = 0;
   for (let i = 0; i < grid.length; i++) {
     for (let j = 0; j < grid[i].length; j++) {
       for (let k = j; k <= grid[i].length; k++) {
         if (grid[i][j] === grid[i][k]) {
-          rowsToReplace.push(k);
-          columnToDrop = i;
+          gridObj.rowsToReplace.push(k);
+          gridObj.columnToDrop = i;
         } else {
-          if (rowsToReplace.length >= 3) {
-            console.log(rowsToReplace);
-            coincidencesFound = true;
+          if (gridObj.rowsToReplace.length >= 3) {
+            gridObj.coincidencesHorizontal = true;
             return gridObj;
+          } else {
+            gridObj.rowsToReplace = [];
+            gridObj.columnToDrop = 0;
           }
         }
       }
     }
   }
-  if(!coincidencesFound){
-    rowsToReplace = [];
-    columnToDrop = 0;
-    return false;
+  if (!gridObj.coincidencesHorizontal) {
+    gridObj.rowsToReplace = [];
+    gridObj.columnToDrop = 0;
+    return gridObj;
   }
 };
 
 const checkVertical = () => {
-  let { grid, columnsToReplace, rowToDrop, coincidencesFound } = gridObj;
+  let { grid } = gridObj;
+  gridObj.coincidencesVertical = false;
+  gridObj.rowToDrop = 0;
+  gridObj.columnsToReplace = [];
   for (let j = 0; j < grid[0].length; j++) {
     for (let i = 0; i < grid.length; i++) {
       for (let u = i; u <= grid.length; u++) {
         if (grid[u] && grid[i][j] === grid[u][j]) {
-          columnsToReplace.push(u);
-          rowToDrop = j;
+          gridObj.rowToDrop = j;
+          gridObj.columnsToReplace.push(u);
         } else {
-          if (columnsToReplace.length >= 3) {
-            coincidencesFound = true;
-            return true;
+          if (gridObj.columnsToReplace.length >= 3) {
+            gridObj.coincidencesVertical = true;
+            return gridObj;
+          } else {
+            gridObj.rowToDrop = 0;
+            gridObj.columnsToReplace = [];
           }
         }
       }
     }
   }
-  if(!coincidencesFound){
-    rowToDrop = 0;
-    columnsToReplace = [];
-    return false;
+  if (!gridObj.coincidencesVertical) {
+    gridObj.rowToDrop = 0;
+    gridObj.columnsToReplace = [];
+    return gridObj;
   }
 };
 
 // DROPPING THE EMOJIS IN gridArray
 
-const dropHorizontal = (x, rest) => {
-  let { grid, coincidencesFound } = gridObj;
+const dropHorizontal = (x, rest, grid) => {
   for (let i = x; i >= 0; i--) {
     rest.forEach((el) => {
-      grid[i][el] = i !== 0 ? grid[i - 1][el] : food[getRandomInt(0, 6)];
+      grid[i][el] =
+        i !== 0 ? grid[i - 1][el] : food[getRandomInt(0, 6)];
     });
   }
-  coincidencesFound = false;
-  return gridObj;
+  console.log(grid);
+  return grid;
 };
 
-const dropVertical = (x, ...rest) => {
-  let { grid, coincidencesFound } = gridObj;
-  const restReverse = rest.reverse();
-  for (let i = restReverse[0]; i >= 0; i--) {
-    restReverse.forEach((el) => {
-      grid[x][el] = i !== 0 ? grid[x][i - 1] : food[getRandomInt(0, 6)];
-    });
-  }
-  coincidencesFound = false;
-  return gridObj;
+const dropVertical = (x, rest, grid) => {
+  for (let i = rest[rest.length - 1]; i >= 0; i--) {
+    grid[i][x] =
+      i !== 0 ? grid[i - 1][x] : food[getRandomInt(0, 6)];
+    }
+    console.log(grid);
+    return grid;
 };
+
 
 // PRINTING NEW RANDOM EMOJIS IN HTML
 
-const printNewEmoji = (j, slot) => {
-  slot.innerHTML = gridObj.grid[0][j];
+const printNewEmoji = (y, slot, col) => {
+  const x = col ? col : 0;
+  slot.innerHTML = gridObj.grid[x][y];
   twemoji.parse(document.body);
   return slot.innerHTML;
 };
@@ -182,27 +193,26 @@ const printNewEmoji = (j, slot) => {
 
 const cleanEmojis = (x, y, points) => {
   points += 100;
-  let toClean =
-    gridContainer.querySelector(`.square[data-x= "${x}"][data-y= "${y}"]`) ===
-    true
-      ? gridContainer.querySelector(`.square[data-x= "${x}"][data-y= "${y}"]`)
-      : "";
+  let toClean = gridContainer.querySelector(
+    `.square[data-x= "${x}"][data-y= "${y}"]`
+  )
+    ? gridContainer.querySelector(`.square[data-x= "${x}"][data-y= "${y}"]`)
+    : "";
   toClean.innerHTML = "";
   pointsCounter.innerHTML = `${points}`;
+  return points;
 };
 
 const cleanEmojisHorizontally = (x, rest) => {
-  let { points } = gridObj;
   rest.forEach((y) => {
-    cleanEmojis(x, y, points);
+    gridObj.points = cleanEmojis(x, y, gridObj.points);
   });
   return gridObj;
 };
 
 const cleanEmojisVertically = (rest, y) => {
-  let { points } = gridObj;
   rest.forEach((x) => {
-    cleanEmojis(x, y, points);
+    gridObj.points = cleanEmojis(x, y, gridObj.points);
   });
   return gridObj;
 };
@@ -211,95 +221,114 @@ const cleanEmojisVertically = (rest, y) => {
 
 const dropHorizontalHTML = (x, rest) => {
   cleanEmojisHorizontally(x, rest);
-  setTimeout(() => {
-    for (let i = x; i >= 0; i--) {
+  for (let i = x; i >= 0; i--) {
+    setTimeout(() => {
       rest.forEach((el) => {
-        let empty = grid.querySelector(
+        let empty = gridContainer.querySelector(
           `.square[data-x= "${i}"][data-y= "${el}"]`
         );
-        let full = grid.querySelector(
+        let full = gridContainer.querySelector(
           `.square[data-x= "${i - 1}"][data-y= "${el}"]`
         );
         empty.innerHTML = i !== 0 ? full.innerHTML : printNewEmoji(el, empty);
       });
-    }
-  }, 800);
+    }, 1200);
+  }
 };
 
 const dropVerticalHTML = (x, rest) => {
   cleanEmojisVertically(rest, x);
-  setTimeout(() => {
-    for (let i = x; i >= 0; i--) {
-      rest.forEach((el) => {
-        let empty = grid.querySelector(
-          `.square[data-x= "${i}"][data-y= "${el}"]`
-        );
-        let full = grid.querySelector(
-          `.square[data-x= "${i - 1}"][data-y= "${el}"]`
-        );
-        empty.innerHTML = i !== 0 ? full.innerHTML : printNewEmoji(el, empty);
-      });
-    }
-  }, 1000);
+  const lengthRest = rest.length;
+  for (let i = rest[rest.length - 1]; i >= 0; i--) {
+    setTimeout(() => {
+      let dataX = i - lengthRest;
+      let empty = gridContainer.querySelector(
+        `.square[data-x= "${i}"][data-y= "${x}"]`
+      );
+      let full =
+        dataX > 0
+          ? gridContainer.querySelector(
+              `.square[data-x= "${dataX}"][data-y= "${x}"]`
+            )
+          : false;
+      empty.innerHTML = dataX > 0 ? full.innerHTML : printNewEmoji(i, empty, i);
+    }, 1200);
+  }
 };
 
 // CHECK UNTIL THERE IS NO COINCIDENCES LEFT
+const multipleHorizontal = (gridObj, newGrid) => {
+  let gridModified = gridObj;
+  gridModified.grid = dropHorizontal(gridObj.columnToDrop, gridObj.rowsToReplace, gridModified.grid);
+  if (!newGrid) {
+    dropHorizontalHTML(gridObj.columnToDrop, gridObj.rowsToReplace);
+  }
+  gridObj = gridModified;
+  return gridObj;
+};
 
-const multipleCheck = () => {
-  checkHorizontal();
-  let { grid, coincidencesFound } = gridObj;
- 
-  let gridObjHorizontal = gridObj;
-  while (coincidencesFound) {
-    log('encontre lpm')
-    const { grid, columnToDrop, rowsToReplace } =
-    gridObjHorizontal;
-    setTimeout(() => {
-      console.log('deberiadropear');
-      dropHorizontal(columnToDrop, rowsToReplace);
-      console.log('deberiadropearhtml');
-      dropHorizontalHTML(columnToDrop, rowsToReplace);
-      gridObjHorizontal = checkHorizontal();
-    }, 1000);
+const multipleVertical = (gridObj, newGrid) => {
+  let gridModified = gridObj;
+  gridModified.grid = dropVertical(gridObj.rowToDrop, gridObj.columnsToReplace,gridModified.grid);
+  if (!newGrid) {
+    dropVerticalHTML(gridObj.rowToDrop, gridObj.columnsToReplace);
   }
-  checkVertical();
-  let gridObjVertical = gridObj;
-  while (gridObjVertical.coincidencesFound) {
-    const { grid, rowToDrop, columnsToReplace } =
-    gridObjVertical;
-    setTimeout(() => {
-      dropVertical(rowToDrop, columnsToReplace);
-      dropVerticalHTML(rowToDrop, columnsToReplace);
-      gridObjVertical = checkVertical();
-    }, 2000);
+  gridObj = gridModified;
+  return gridObj;
+};
+
+const multipleCheck = async (newGrid) => {
+  let gridCheck = checkHorizontal();
+  gridCheck = checkVertical();
+  let continueDroppingHor = gridCheck.coincidencesHorizontal;
+  let continueDroppingVer = gridCheck.coincidencesVertical;
+
+  while (continueDroppingHor || continueDroppingVer) {
+    if (continueDroppingHor) gridCheck = multipleHorizontal(gridCheck, newGrid);
+    gridCheck = checkHorizontal();
+    if (continueDroppingVer) gridCheck = multipleVertical(gridCheck, newGrid);
+    gridCheck = checkVertical();
+    continueDroppingHor = gridCheck.coincidencesHorizontal;
+    continueDroppingVer = gridCheck.coincidencesVertical;
+    console.log(gridCheck);
   }
+  gridObj = gridCheck;
+  return gridObj;
 };
 
 // EMOJI CLICK EVENT
 
 const emojiClick = (e) => {
-  let { rowToDrop, columnToDrop, rowsToReplace, columnsToReplace } = gridObj;
+  gridObj.canMove = false;
   let clickedEmoji = document.querySelector(".clicked");
-  let secondEmoji = e.target.parentNode;
+  let secondEmoji = e.target.classList.contains("square")
+    ? e.target
+    : e.target.parentNode;
   if (clickedEmoji) {
     if (isNextTo(clickedEmoji, secondEmoji)) {
       swapEmojis(clickedEmoji, secondEmoji);
-      checkHorizontal();
-      checkVertical();
-      if (rowsToReplace.length >= 3 || columnsToReplace.length >= 3) {
+      let gridCheck = checkHorizontal();
+      gridCheck = checkVertical();
+      if (
+        gridCheck.rowsToReplace.length >= 3 ||
+        gridCheck.columnsToReplace.length >= 3
+      ) {
         multipleCheck();
       } else {
         setTimeout(() => {
           swapEmojis(clickedEmoji, secondEmoji);
         }, 600);
+        gridObj.canMove = true;
       }
       clickedEmoji.classList.remove("clicked");
     } else {
       clickedEmoji.classList.remove("clicked");
       e.target.parentNode.classList.add("clicked");
+      gridObj.canMove = true;
     }
   } else {
     e.target.parentNode.classList.add("clicked");
+    gridObj.canMove = true;
   }
 };
 
@@ -358,7 +387,7 @@ const printgrid = (gridArray) => {
 
 // Creating grid
 
-const createGrid = (difficulty) => {
+const createGrid = async (difficulty) => {
   let gridArray = [];
   cleanGrid();
   for (let i = 0; i < difficulty; i++) {
@@ -369,7 +398,8 @@ const createGrid = (difficulty) => {
   }
   gridObj.grid = gridArray;
   gridObj.difficulty = difficulty;
-  multipleCheck(gridObj.grid);
+  gridObj = await multipleCheck("new grid");
+  console.log(gridObj.grid);
   printgrid(gridObj.grid);
   twemoji.parse(document.body);
   timer(maxTime);
@@ -507,42 +537,100 @@ const gameOverModal = () => {
     }
   });
 };
-
-// KEYBOARD EVENTS
-const handlerKeyboardInput = (e) => {
-  switch (e.code) {
-    case 'Enter':
-    case 'Space':
-      let clickedEmoji = document.querySelector(".clicked");
-      if (clickedEmoji) {
-        clickedEmoji.classList.remove("clicked");
-      }
-      break
-    case 'KeyW':
-    case 'ArrowUp':
-      multipleCheck()
-      break
-    case 'KeyA':
-    case 'ArrowLeft':
-      multipleCheck()
-      break
-    case 'KeyS':
-    case 'ArrowDown':
-      multipleCheck()
-      break
-    case 'KeyD':
-    case 'ArrowRight':
-      multipleCheck()
-      break
-    case 'KeyR':
-      restartModal();
-      break
+const moveClick = (direction) => {
+  if (document.querySelector(".square.clicked")) {
+    const clickedEmoji = document.querySelector(".square.clicked");
+  } else {
+    document
+      .querySelector('.square[data-x="0"][data-y="0"]')
+      .classList.add("clicked");
+    return;
   }
-}
 
-document.addEventListener('keydown', handlerKeyboardInput);
+  let x = Number(clickedEmoji.dataset.x);
+  let y = Number(clickedEmoji.dataset.y);
 
-// MODAL EVENTS
+  switch (direction) {
+    case "up": {
+      y = y === 0 ? gridObj.difficulty - 1 : y - 1;
+      break;
+    }
+    case "left": {
+      x = x === 0 ? gridObj.difficulty - 1 : x - 1;
+      break;
+    }
+    case "down": {
+      y = y === gridObj.difficulty - 1 ? 0 : y + 1;
+      break;
+    }
+    case "right": {
+      x = x === gridObj.difficulty - 1 ? 0 : x + 1;
+      break;
+    }
+    default:
+      break;
+  }
+  const nextEmoji = document.querySelector(
+    `.square[data-x="${x}"][data-y="${y}"]`
+  );
+  clicked.classList.remove("seleccionado");
+  nextEmoji.classList.add("seleccionado");
+};
+
+const checkMovement = (direction) => {
+  if (!document.querySelector(".square.clicked")) {
+    document
+      .querySelector('.square[data-x="0"][data-y="0"]')
+      .classList.add("clicked");
+  } else {
+    const cuadrado = document.querySelector(".square.clicked");
+    if (cuadrado.classList.contains("clicked")) {
+      emojiClick(cuadrado);
+    } else {
+      moveClick(direction);
+    }
+  }
+};
+
+const checkKeyboardInput = (e) => {
+  if (!gridObj.canMove) {
+    return;
+  }
+  switch (e.code) {
+    case "Enter":
+    case "Space":
+      const clickedEmoji = document.querySelector(".clicked");
+      if (clickedEmoji) {
+        clickedEmoji.classList.toggle("clicked");
+      }
+      break;
+    case "KeyW":
+    case "ArrowUp":
+      checkMovement("up");
+      break;
+    case "KeyA":
+    case "ArrowLeft":
+      checkMovement("left");
+      break;
+    case "KeyS":
+    case "ArrowDown":
+      checkMovement("down");
+      break;
+    case "KeyD":
+    case "ArrowRight":
+      checkMovement("right");
+      break;
+    case "KeyR":
+      restartModal();
+      break;
+    default:
+      break;
+  }
+};
+
+// PAGE EVENTS
+
+document.addEventListener("keydown", checkKeyboardInput);
 
 window.addEventListener("load", () => {
   gridContainer.style.height = `${gridContainer.clientWidth}px`;
