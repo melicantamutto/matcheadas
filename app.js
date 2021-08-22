@@ -13,7 +13,7 @@ const pointsCounter = document.getElementById("points-counter");
 
 const clock = document.getElementById("clock");
 let time;
-let maxTime = 3000000;
+let maxTime = 30;
 let pause = 0;
 let callModal = true;
 
@@ -140,6 +140,9 @@ const checkVertical = () => {
           gridObj.columnsToReplace.push(u);
         } else {
           if (gridObj.columnsToReplace.length >= 3) {
+            gridObj.columnsToReplace.forEach((col) => {
+              console.log(col);
+            });
             gridObj.coincidencesVertical = true;
             return gridObj;
           } else {
@@ -162,23 +165,19 @@ const checkVertical = () => {
 const dropHorizontal = (x, rest, grid) => {
   for (let i = x; i >= 0; i--) {
     rest.forEach((el) => {
-      grid[i][el] =
-        i !== 0 ? grid[i - 1][el] : food[getRandomInt(0, 6)];
+      grid[i][el] = i !== 0 ? grid[i - 1][el] : food[getRandomInt(0, 6)];
     });
   }
-  console.log(grid);
   return grid;
 };
 
 const dropVertical = (x, rest, grid) => {
   for (let i = rest[rest.length - 1]; i >= 0; i--) {
     grid[i][x] =
-      i !== 0 ? grid[i - 1][x] : food[getRandomInt(0, 6)];
-    }
-    console.log(grid);
-    return grid;
+      i - rest.length > 0 ? grid[i - rest.length][x] : food[getRandomInt(0, 6)];
+  }
+  return grid;
 };
-
 
 // PRINTING NEW RANDOM EMOJIS IN HTML
 
@@ -259,7 +258,11 @@ const dropVerticalHTML = (x, rest) => {
 // CHECK UNTIL THERE IS NO COINCIDENCES LEFT
 const multipleHorizontal = (gridObj, newGrid) => {
   let gridModified = gridObj;
-  gridModified.grid = dropHorizontal(gridObj.columnToDrop, gridObj.rowsToReplace, gridModified.grid);
+  gridModified.grid = dropHorizontal(
+    gridObj.columnToDrop,
+    gridObj.rowsToReplace,
+    gridModified.grid
+  );
   if (!newGrid) {
     dropHorizontalHTML(gridObj.columnToDrop, gridObj.rowsToReplace);
   }
@@ -269,7 +272,11 @@ const multipleHorizontal = (gridObj, newGrid) => {
 
 const multipleVertical = (gridObj, newGrid) => {
   let gridModified = gridObj;
-  gridModified.grid = dropVertical(gridObj.rowToDrop, gridObj.columnsToReplace,gridModified.grid);
+  gridModified.grid = dropVertical(
+    gridObj.rowToDrop,
+    gridObj.columnsToReplace,
+    gridModified.grid
+  );
   if (!newGrid) {
     dropVerticalHTML(gridObj.rowToDrop, gridObj.columnsToReplace);
   }
@@ -293,6 +300,7 @@ const multipleCheck = async (newGrid) => {
     console.log(gridCheck);
   }
   gridObj = gridCheck;
+  console.log(gridObj);
   return gridObj;
 };
 
@@ -301,9 +309,9 @@ const multipleCheck = async (newGrid) => {
 const emojiClick = (e) => {
   gridObj.canMove = false;
   let clickedEmoji = document.querySelector(".clicked");
-  let secondEmoji = e.target.classList.contains("square")
-    ? e.target
-    : e.target.parentNode;
+  let secondEmoji = e.target
+    ? e.target.parentNode
+    : e;
   if (clickedEmoji) {
     if (isNextTo(clickedEmoji, secondEmoji)) {
       swapEmojis(clickedEmoji, secondEmoji);
@@ -323,13 +331,16 @@ const emojiClick = (e) => {
       clickedEmoji.classList.remove("clicked");
     } else {
       clickedEmoji.classList.remove("clicked");
-      e.target.parentNode.classList.add("clicked");
+      e.target
+      ? e.target.parentNode.classList.add("clicked")
+      : e.classList.add("clicked");
       gridObj.canMove = true;
     }
   } else {
     e.target.parentNode.classList.add("clicked");
     gridObj.canMove = true;
   }
+  return gridObj;
 };
 
 // --------------------------CREATING GRID--------------------------
@@ -538,32 +549,24 @@ const gameOverModal = () => {
   });
 };
 const moveClick = (direction) => {
-  if (document.querySelector(".square.clicked")) {
-    const clickedEmoji = document.querySelector(".square.clicked");
-  } else {
-    document
-      .querySelector('.square[data-x="0"][data-y="0"]')
-      .classList.add("clicked");
-    return;
-  }
-
+  const clickedEmoji = document.querySelector(".square.clicked");
   let x = Number(clickedEmoji.dataset.x);
   let y = Number(clickedEmoji.dataset.y);
 
   switch (direction) {
-    case "up": {
+    case "left": {
       y = y === 0 ? gridObj.difficulty - 1 : y - 1;
       break;
     }
-    case "left": {
+    case "up": {
       x = x === 0 ? gridObj.difficulty - 1 : x - 1;
       break;
     }
-    case "down": {
+    case "right": {
       y = y === gridObj.difficulty - 1 ? 0 : y + 1;
       break;
     }
-    case "right": {
+    case "down": {
       x = x === gridObj.difficulty - 1 ? 0 : x + 1;
       break;
     }
@@ -573,8 +576,38 @@ const moveClick = (direction) => {
   const nextEmoji = document.querySelector(
     `.square[data-x="${x}"][data-y="${y}"]`
   );
-  clicked.classList.remove("seleccionado");
-  nextEmoji.classList.add("seleccionado");
+  clickedEmoji.classList.remove("clicked");
+  nextEmoji.classList.add("clicked");
+};
+const detectAdyacentMove = (direction) => {
+  const clickedEmoji = document.querySelector(".square.clicked");
+  let x = Number(clickedEmoji.dataset.x);
+  let y = Number(clickedEmoji.dataset.y);
+
+  switch (direction) {
+    case "left": {
+      y = y === 0 ? gridObj.difficulty - 1 : y - 1;
+      break;
+    }
+    case "up": {
+      x = x === 0 ? gridObj.difficulty - 1 : x - 1;
+      break;
+    }
+    case "right": {
+      y = y === gridObj.difficulty - 1 ? 0 : y + 1;
+      break;
+    }
+    case "down": {
+      x = x === gridObj.difficulty - 1 ? 0 : x + 1;
+      break;
+    }
+    default:
+      break;
+  }
+  const nextEmoji = document.querySelector(
+    `.square[data-x="${x}"][data-y="${y}"]`
+  );
+  return nextEmoji
 };
 
 const checkMovement = (direction) => {
@@ -584,8 +617,13 @@ const checkMovement = (direction) => {
       .classList.add("clicked");
   } else {
     const cuadrado = document.querySelector(".square.clicked");
-    if (cuadrado.classList.contains("clicked")) {
-      emojiClick(cuadrado);
+    if (cuadrado.classList.contains("pressed")) {
+      const nextEmoji = detectAdyacentMove(direction);
+      emojiClick(nextEmoji);
+      if(cuadrado){
+        document.querySelector('.pressed').classList.add('clicked')
+        document.querySelector('.pressed').classList.remove('pressed')
+      }
     } else {
       moveClick(direction);
     }
@@ -601,7 +639,7 @@ const checkKeyboardInput = (e) => {
     case "Space":
       const clickedEmoji = document.querySelector(".clicked");
       if (clickedEmoji) {
-        clickedEmoji.classList.toggle("clicked");
+        clickedEmoji.classList.toggle("pressed");
       }
       break;
     case "KeyW":
