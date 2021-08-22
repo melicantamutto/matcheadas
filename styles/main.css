@@ -102,6 +102,12 @@ body {
     border: 1px solid var(--darkViolet);
     border-radius: 10px;
 }
+.pressed {
+    /* box-shadow: 0px 0px 1px 3px var(--darkViolet); */
+    /* background-color: rgba(77, 49, 77, 0.9); */
+    border: 1px dashed var(--darkViolet);
+    border-radius: 10px;
+}
 
 /* CLOCK STYLES */
 
